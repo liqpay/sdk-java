@@ -1,4 +1,4 @@
-package ua.privatbank.liqpay;
+package com.liqpay;
 
 import java.security.MessageDigest;
 import java.text.ParseException;

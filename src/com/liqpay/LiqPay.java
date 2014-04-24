@@ -1,4 +1,4 @@
-package ua.privatbank.liqpay;
+package com.liqpay;
 
 
 import java.util.HashMap;
@@ -87,7 +87,7 @@ public class LiqPay {
 	
 			return form;
 			
-		}
+	}
 	
 	
 	
