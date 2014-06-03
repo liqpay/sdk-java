@@ -133,7 +133,15 @@ public class LiqPay {
 		if(address != null)sign_str += address;
 		if(postal_code != null)sign_str += postal_code;				
 		
-		String signature = LiqPayUtil.base64_encode( LiqPayUtil.sha1( sign_str ) );
+		return str_to_sign(sign_str);
+		
+	}
+	
+	
+	
+	public String str_to_sign(String str){				
+		
+		String signature = LiqPayUtil.base64_encode( LiqPayUtil.sha1( str ) );
 
 		return signature;
 		
