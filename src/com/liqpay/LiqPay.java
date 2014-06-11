@@ -1,6 +1,8 @@
 package com.liqpay;
 
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +11,9 @@ import org.json.simple.parser.JSONParser;
 
 public class LiqPay {
 	
+	
+	private Proxy __PROXY = null;
+	private String __PROXY_AUTH = null;
 	
 	private String host = "https://www.liqpay.com/api/";	
 	private String pub_key = "";
@@ -48,7 +53,7 @@ public class LiqPay {
 		HashMap<String, String> data = new HashMap<String, String>(); 
 		data.put("data", dataJson);
 		data.put("signature", signature);
-		String resp = LiqPayRequest.post(host + path, data);
+		String resp = LiqPayRequest.post(host + path, data, this);
 		
 		JSONParser parser = new JSONParser();
 		Object obj = parser.parse(resp);
@@ -138,6 +143,28 @@ public class LiqPay {
 	}
 	
 	
+	
+	public void setProxy(String host, Integer port){		
+		__PROXY = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
+	}
+	
+	public void setProxy(String host, Integer port, Proxy.Type type){
+		__PROXY = new Proxy(type, new InetSocketAddress(host, port));
+	}
+	
+	
+	public void setProxyUser(String login, String password){		
+		 __PROXY_AUTH = new String(LiqPayUtil.base64_encode(new String(login + ":" + password).getBytes()));
+	}
+	
+	public Proxy getProxy(){		
+		return __PROXY;		
+	}
+	
+	public String getProxyUser(){		
+		return __PROXY_AUTH;		
+	}
+
 	
 	public String str_to_sign(String str){				
 		

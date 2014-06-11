@@ -14,7 +14,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class LiqPayRequest {
 		
-	public static String post(String url, HashMap<String, String> list) throws Exception {
+	public static String post(String url, HashMap<String, String> list, LiqPay lp) throws Exception {
 		
 		
 	   String urlParameters = "";
@@ -27,7 +27,14 @@ public class LiqPayRequest {
         BufferedReader in;
         
     	if(url.indexOf( "https:" ) != -1){
-        	HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+    		HttpsURLConnection con;
+    		if(lp.getProxy() == null){
+    			con = (HttpsURLConnection) obj.openConnection();
+    		}else{
+    			con = (HttpsURLConnection) obj.openConnection(lp.getProxy());
+    			if(lp.getProxyUser() != null)
+    			con.setRequestProperty("Proxy-Authorization", "Basic " + lp.getProxyUser());
+    		}
         	con.setRequestMethod("POST");
         	con.setDoOutput(true);
         	wr = new DataOutputStream(con.getOutputStream());
@@ -38,7 +45,14 @@ public class LiqPayRequest {
             
         	in = new BufferedReader(  new InputStreamReader(con.getInputStream()));
     	}else{
-        	HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        	HttpURLConnection con;
+    		if(lp.getProxy() == null){
+    			con = (HttpURLConnection) obj.openConnection();
+    		}else{
+    			con = (HttpURLConnection) obj.openConnection(lp.getProxy());
+    			if(lp.getProxyUser() != null)
+    			con.setRequestProperty("Proxy-Authorization", "Basic " + lp.getProxyUser());
+    		}
         	con.setRequestMethod("POST");
         	con.setDoOutput(true);
         	wr = new DataOutputStream(con.getOutputStream());
