@@ -14,8 +14,9 @@ public class LiqPay {
 	
 	private Proxy __PROXY = null;
 	private String __PROXY_AUTH = null;
-	
-	private String host = "https://www.liqpay.com/api/";	
+
+	public String  host = "https://www.liqpay.com/api/";	
+	public String  host_checkout = "https://www.liqpay.com/api/checkout";	
 	private String pub_key = "";
 	private String priv_key = "";	
 	
@@ -40,14 +41,16 @@ public class LiqPay {
 	@SuppressWarnings("unchecked")
 	public HashMap<String, Object> api(String path, HashMap<String, String> list) throws Exception{
 		
-		JSONObject json = new JSONObject();
+		if(list.get("version") == null)
+			throw new NullPointerException("version can't be null");	
 		
+		JSONObject json = new JSONObject();		
 		json.put("public_key", pub_key);
 		
 		for (Map.Entry<String, String> entry: list.entrySet())
 			json.put(entry.getKey(), entry.getValue());
 		
-		String dataJson = json.toString();
+		String dataJson  = LiqPayUtil.base64_encode( json.toString().getBytes() );
 		String signature = LiqPayUtil.base64_encode( LiqPayUtil.sha1( priv_key + dataJson + priv_key) );
 		
 		HashMap<String, String> data = new HashMap<String, String>(); 
@@ -76,17 +79,15 @@ public class LiqPay {
 			if(list.get("language") != null)
 				language = list.get("language");			
 			
-			String signature = cnb_signature(list);
-			
-			list.put("public_key", pub_key);
-			list.put("signature", signature);
+			JSONObject json = cnb_params(list);	
+			String data = LiqPayUtil.base64_encode( json.toString().getBytes() );
+			String signature = cnb_signature(list);			
+	
 			
 			String form = "";		
-			form += "<form method=\"post\" action=\"https://www.liqpay.com/api/pay\" accept-charset=\"utf-8\">\n";
-			
-			for (Map.Entry<String, String> entry: list.entrySet())
-				form += "<input type=\"hidden\" name=\""+entry.getKey()+"\" value=\""+entry.getValue()+"\" />\n";			
-			
+			form += "<form method=\"post\" action=\""+host_checkout+"\" accept-charset=\"utf-8\">\n";
+			form += "<input type=\"hidden\" name=\"data\" value=\""+data+"\" />\n";
+			form += "<input type=\"hidden\" name=\"signature\" value=\""+signature+"\" />\n";
 			form += "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1"+language+".radius.png\" name=\"btn_text\" />\n";
 			form += "</form>\n";
 	
@@ -97,48 +98,36 @@ public class LiqPay {
 	
 	
 	
-	public String cnb_signature(HashMap<String, String> list){
-		
-		String amount = list.get("amount");
-		String currency = list.get("currency");
-		String order_id = list.get("order_id");
-		String type = list.get("type");
-		String description = list.get("description");
-		String result_url = list.get("result_url");
-		String server_url = list.get("server_url");
-		String first_name = list.get("sender_first_name");
-		String last_name = list.get("sender_last_name");
-		String middle_name = list.get("sender_middle_name");
-		String country_code = list.get("sender_country");
-		String city_name = list.get("sender_city");
-		String address = list.get("sender_address");
-		String postal_code = list.get("sender_postal_code");
-		
+	public String cnb_signature(HashMap<String, String> list){		
 				
-		if(amount == null)
-			throw new NullPointerException("amount can't be null");		
-		if(currency == null)
+		JSONObject json = cnb_params(list);
+		String sign_str = priv_key + LiqPayUtil.base64_encode( json.toString().getBytes() ) + priv_key;			
+		return str_to_sign(sign_str);
+		
+	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	private JSONObject cnb_params(HashMap<String, String> list){		
+		
+		if(list.get("version") == null)
+			throw new NullPointerException("version can't be null");	
+		if(list.get("amount") == null)
+			throw new NullPointerException("amount can't be null");
+		if(list.get("currency") == null)
 			throw new NullPointerException("currency can't be null");		
-		if(description == null)
+		if(list.get("description") == null)
 			throw new NullPointerException("description can't be null");
 		
-
-		String sign_str = priv_key + amount + currency + pub_key;
+		if(list.get("public_key") == null)
+			list.put("public_key", pub_key);	
 		
-		if(order_id != null)sign_str += order_id;
-		if(type != null)sign_str += type;
-		if(description != null)sign_str += description;
-		if(result_url != null)sign_str += result_url;
-		if(server_url != null)sign_str += server_url;
-		if(first_name != null)sign_str += first_name;
-		if(last_name != null)sign_str += last_name;
-		if(middle_name != null)sign_str += middle_name;
-		if(country_code != null)sign_str += country_code;
-		if(city_name != null)sign_str += city_name;
-		if(address != null)sign_str += address;
-		if(postal_code != null)sign_str += postal_code;				
+		JSONObject json = new JSONObject();		
+		for (Map.Entry<String, String> entry: list.entrySet())
+			json.put(entry.getKey(), entry.getValue());
 		
-		return str_to_sign(sign_str);
+		return json;
 		
 	}
 	
