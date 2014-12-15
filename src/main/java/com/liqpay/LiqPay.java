@@ -13,20 +13,20 @@ public class LiqPay {
     private Proxy __PROXY = null;
     private String __PROXY_AUTH = null;
 
-    public String host = "https://www.liqpay.com/api/";
+    public String liqpayApiUrl = "https://www.liqpay.com/api/";
     public String host_checkout = "https://www.liqpay.com/api/checkout";
-    private String pub_key = "";
-    private String priv_key = "";
+    private final String publicKey;
+    private final String privateKey;
 
-    public LiqPay(String public_key, String private_key) {
-        pub_key = public_key;
-        priv_key = private_key;
+    public LiqPay(String publicKey, String privateKey) {
+        this.publicKey = publicKey;
+        this.privateKey = privateKey;
     }
 
-    public LiqPay(String public_key, String private_key, String url) {
-        pub_key = public_key;
-        priv_key = private_key;
-        host = url;
+    public LiqPay(String publicKey, String privateKey, String liqpayApiUrl) {
+        this.publicKey = publicKey;
+        this.privateKey = privateKey;
+        this.liqpayApiUrl = liqpayApiUrl;
     }
 
     @SuppressWarnings("unchecked")
@@ -35,18 +35,18 @@ public class LiqPay {
             throw new NullPointerException("version can't be null");
 
         JSONObject json = new JSONObject();
-        json.put("public_key", pub_key);
+        json.put("public_key", publicKey);
 
         for (Map.Entry<String, String> entry : list.entrySet())
             json.put(entry.getKey(), entry.getValue());
 
         String dataJson = LiqPayUtil.base64_encode(json.toString().getBytes());
-        String signature = LiqPayUtil.base64_encode(LiqPayUtil.sha1(priv_key + dataJson + priv_key));
+        String signature = LiqPayUtil.base64_encode(LiqPayUtil.sha1(privateKey + dataJson + privateKey));
 
-        HashMap<String, String> data = new HashMap<String, String>();
+        HashMap<String, String> data = new HashMap<>();
         data.put("data", dataJson);
         data.put("signature", signature);
-        String resp = LiqPayRequest.post(host + path, data, this);
+        String resp = LiqPayRequest.post(liqpayApiUrl + path, data, this);
 
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(resp);
@@ -80,7 +80,7 @@ public class LiqPay {
 
     public String cnb_signature(HashMap<String, String> list) {
         JSONObject json = cnb_params(list);
-        String sign_str = priv_key + LiqPayUtil.base64_encode(json.toString().getBytes()) + priv_key;
+        String sign_str = privateKey + LiqPayUtil.base64_encode(json.toString().getBytes()) + privateKey;
         return str_to_sign(sign_str);
     }
 
@@ -97,7 +97,7 @@ public class LiqPay {
             throw new NullPointerException("description can't be null");
 
         if (list.get("public_key") == null)
-            list.put("public_key", pub_key);
+            list.put("public_key", publicKey);
 
         JSONObject json = new JSONObject();
         for (Map.Entry<String, String> entry : list.entrySet())
