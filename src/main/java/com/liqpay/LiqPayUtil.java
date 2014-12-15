@@ -4,7 +4,6 @@ import java.security.MessageDigest;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Set;
 
 import javax.xml.bind.DatatypeConverter;
@@ -48,9 +47,7 @@ public class LiqPayUtil {
         HashMap<String, Object> data = new HashMap<String, Object>();
         @SuppressWarnings("unchecked")
         Set<Object> set = jsonObject.keySet();
-        Iterator<Object> iterator = set.iterator();
-        while (iterator.hasNext()) {
-            Object obj = iterator.next();
+        for (Object obj : set) {
             if (jsonObject.get(obj) instanceof JSONArray) {
                 data.put(obj.toString(), getArray(jsonObject.get(obj)));
             } else {

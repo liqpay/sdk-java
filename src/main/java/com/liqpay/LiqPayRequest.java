@@ -23,26 +23,7 @@ public class LiqPayRequest {
         URL obj = new URL(url);
         DataOutputStream wr;
         BufferedReader in;
-
-        if (url.startsWith("https:")) {
-            HttpsURLConnection con;
-            if (lp.getProxy() == null) {
-                con = (HttpsURLConnection) obj.openConnection();
-            } else {
-                con = (HttpsURLConnection) obj.openConnection(lp.getProxy());
-                if (lp.getProxyUser() != null)
-                    con.setRequestProperty("Proxy-Authorization", "Basic " + lp.getProxyUser());
-            }
-            con.setRequestMethod("POST");
-            con.setDoOutput(true);
-            wr = new DataOutputStream(con.getOutputStream());
-            // Send post request
-            wr.writeBytes(urlParameters);
-            wr.flush();
-            wr.close();
-            in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        } else {
-            HttpURLConnection con;
+        HttpURLConnection con;
             if (lp.getProxy() == null) {
                 con = (HttpURLConnection) obj.openConnection();
             } else {
@@ -58,7 +39,6 @@ public class LiqPayRequest {
             wr.flush();
             wr.close();
             in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        }
 
         String inputLine;
         StringBuffer response = new StringBuffer();
