@@ -9,6 +9,9 @@ import java.util.Map;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import static com.liqpay.LiqPayUtil.base64_encode;
+import static com.liqpay.LiqPayUtil.sha1;
+
 public class LiqPay {
     private Proxy __PROXY = null;
     private String __PROXY_AUTH = null;
@@ -40,8 +43,8 @@ public class LiqPay {
         for (Map.Entry<String, String> entry : list.entrySet())
             json.put(entry.getKey(), entry.getValue());
 
-        String dataJson = LiqPayUtil.base64_encode(json.toString().getBytes());
-        String signature = LiqPayUtil.base64_encode(LiqPayUtil.sha1(privateKey + dataJson + privateKey));
+        String dataJson = base64_encode(json.toString().getBytes());
+        String signature = base64_encode(sha1(privateKey + dataJson + privateKey));
 
         HashMap<String, String> data = new HashMap<>();
         data.put("data", dataJson);
@@ -64,7 +67,7 @@ public class LiqPay {
             language = list.get("language");
 
         JSONObject json = cnb_params(list);
-        String data = LiqPayUtil.base64_encode(json.toString().getBytes());
+        String data = base64_encode(json.toString().getBytes());
         String signature = cnb_signature(list);
 
         String form = "";
@@ -80,10 +83,9 @@ public class LiqPay {
 
     public String cnb_signature(HashMap<String, String> list) {
         JSONObject json = cnb_params(list);
-        String sign_str = privateKey + LiqPayUtil.base64_encode(json.toString().getBytes()) + privateKey;
+        String sign_str = privateKey + base64_encode(json.toString().getBytes()) + privateKey;
         return str_to_sign(sign_str);
     }
-
 
     @SuppressWarnings("unchecked")
     private JSONObject cnb_params(HashMap<String, String> list) {
@@ -117,7 +119,7 @@ public class LiqPay {
 
 
     public void setProxyUser(String login, String password) {
-        __PROXY_AUTH = LiqPayUtil.base64_encode((login + ":" + password).getBytes());
+        __PROXY_AUTH = base64_encode((login + ":" + password).getBytes());
     }
 
     public Proxy getProxy() {
@@ -130,7 +132,7 @@ public class LiqPay {
 
 
     public String str_to_sign(String str) {
-        String signature = LiqPayUtil.base64_encode(LiqPayUtil.sha1(str));
+        String signature = base64_encode(sha1(str));
         return signature;
     }
 }
