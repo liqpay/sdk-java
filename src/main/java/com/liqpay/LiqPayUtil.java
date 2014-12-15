@@ -19,7 +19,7 @@ public class LiqPayUtil {
             SHA.reset();
             SHA.update(param.getBytes("UTF-8"));
         } catch (Exception e) {
-            System.err.println(e);
+            throw new RuntimeException("Can't calc SHA-1 hash", e);
         }
         return SHA.digest();
     }
