@@ -6,12 +6,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.Map;
 
 public class LiqPayRequest {
 
-    public static String post(String url, HashMap<String, String> list, LiqPay lp) throws Exception {
+    public static String post(String url, Map<String, String> list, LiqPay lp) throws Exception {
         String urlParameters = "";
 
         for (Map.Entry<String, String> entry : list.entrySet())

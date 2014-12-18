@@ -33,7 +33,7 @@ public class LiqPay {
     }
 
     @SuppressWarnings("unchecked")
-    public HashMap<String, Object> api(String path, HashMap<String, String> list) throws Exception {
+    public HashMap<String, Object> api(String path, Map<String, String> list) throws Exception {
         if (list.get("version") == null)
             throw new NullPointerException("version can't be null");
 
@@ -61,7 +61,7 @@ public class LiqPay {
     }
 
 
-    public String cnb_form(HashMap<String, String> list) {
+    public String cnb_form(Map<String, String> list) {
         String language = "ru";
         if (list.get("language") != null)
             language = list.get("language");
@@ -81,14 +81,14 @@ public class LiqPay {
     }
 
 
-    public String cnb_signature(HashMap<String, String> list) {
+    public String cnb_signature(Map<String, String> list) {
         JSONObject json = cnb_params(list);
         String sign_str = privateKey + base64_encode(json.toString().getBytes()) + privateKey;
         return str_to_sign(sign_str);
     }
 
     @SuppressWarnings("unchecked")
-    private JSONObject cnb_params(HashMap<String, String> list) {
+    private JSONObject cnb_params(Map<String, String> list) {
         if (list.get("version") == null)
             throw new NullPointerException("version can't be null");
         if (list.get("amount") == null)
