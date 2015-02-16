@@ -18,6 +18,7 @@ public class LiqPay {
     public String liqpayApiUrl = "https://www.liqpay.com/api/";
     public String host_checkout = "https://www.liqpay.com/api/checkout";
     private static final String DEFAULT_LANG = "ru";
+    private final JSONParser parser = new JSONParser();
     private final String publicKey;
     private final String privateKey;
     private Proxy proxy;
@@ -50,28 +51,20 @@ public class LiqPay {
         }
     }
 
-
-    @SuppressWarnings("unchecked")
     public HashMap<String, Object> api(String path, Map<String, String> params) throws Exception {
         HashMap<String, String> data = generateData(params);
         String resp = LiqPayRequest.post(liqpayApiUrl + path, data, this);
-        JSONParser parser = new JSONParser();
         JSONObject jsonObj = (JSONObject) parser.parse(resp);
         return LiqPayUtil.parseJson(jsonObj);
     }
 
+    @SuppressWarnings("unchecked")
     protected HashMap<String, String> generateData(Map<String, String> params) {
         checkApiVersion(params);
-
-        JSONObject json = new JSONObject();
+        JSONObject json = new JSONObject(params);
         json.put("public_key", publicKey);
-
-        for (Map.Entry<String, String> entry : params.entrySet())
-            json.put(entry.getKey(), entry.getValue());
-
-        String dataJson = base64_encode(json.toString().getBytes());
+        String dataJson = base64_encode(json.toString());
         String signature = str_to_sign(privateKey + dataJson + privateKey);
-
         HashMap<String, String> data = new HashMap<>();
         data.put("data", dataJson);
         data.put("signature", signature);
@@ -89,7 +82,7 @@ public class LiqPay {
     public String cnb_form(Map<String, String> params) {
         String  language = params.get("language") != null ? params.get("language") : DEFAULT_LANG;
         JSONObject json = cnb_params(params);
-        String data = base64_encode(json.toString().getBytes());
+        String data = base64_encode(json.toString());
         String signature = cnb_signature(params);
         return renderHtmlForm(data, language, signature);
     }
@@ -104,10 +97,9 @@ public class LiqPay {
         return form;
     }
 
-
     protected String cnb_signature(Map<String, String> params) {
         JSONObject json = cnb_params(params);
-        String sign_str = privateKey + base64_encode(json.toString().getBytes()) + privateKey;
+        String sign_str = privateKey + base64_encode(json.toString()) + privateKey;
         return str_to_sign(sign_str);
     }
 
@@ -120,17 +112,11 @@ public class LiqPay {
             throw new NullPointerException("currency can't be null");
         if (params.get("description") == null)
             throw new NullPointerException("description can't be null");
-
-        if (params.get("public_key") == null)
-            params.put("public_key", publicKey);
-
-        JSONObject json = new JSONObject();
-        for (Map.Entry<String, String> entry : params.entrySet())
-            json.put(entry.getKey(), entry.getValue());
-
+        JSONObject json = new JSONObject(params);
+        if (json.get("public_key") == null)
+            json.put("public_key", publicKey);
         return json;
     }
-
 
     public void setProxy(String host, Integer port) {
         proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
@@ -141,7 +127,7 @@ public class LiqPay {
     }
 
     public void setProxyUser(String login, String password) {
-        proxyUser = base64_encode((login + ":" + password).getBytes());
+        proxyUser = base64_encode(login + ":" + password);
     }
 
     public Proxy getProxy() {
@@ -151,7 +137,6 @@ public class LiqPay {
     public String getProxyUser() {
         return proxyUser;
     }
-
 
     public String str_to_sign(String str) {
         return base64_encode(sha1(str));

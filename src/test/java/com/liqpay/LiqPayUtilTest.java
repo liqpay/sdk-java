@@ -25,6 +25,11 @@ public class LiqPayUtilTest {
     }
 
     @Test
+    public void testBase64_encodeStr() {
+        assertEquals("c29tZSBzdHJpbmc=", base64_encode("some string"));
+    }
+
+    @Test
     public void testGetArray() throws ParseException {
         // given:
         JSONArray jsonArray = new JSONArray();
