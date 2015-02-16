@@ -3,9 +3,7 @@ package com.liqpay;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
@@ -78,10 +76,11 @@ public class LiqPay {
     }
 
     public String cnb_form(Map<String, String> params) {
-        String  language = params.get("language") != null ? params.get("language") : DEFAULT_LANG;
-        JSONObject json = cnb_params(params);
+        checkCnbParams(params);
+        JSONObject json = new JSONObject(params);
         String data = base64_encode(json.toString());
         String signature = cnb_signature(params);
+        String  language = params.get("language") != null ? params.get("language") : DEFAULT_LANG;
         return renderHtmlForm(data, language, signature);
     }
 
@@ -96,11 +95,11 @@ public class LiqPay {
     }
 
     protected String cnb_signature(Map<String, String> params) {
-        return createSignature(cnb_params(params));
+        checkCnbParams(params);
+        return createSignature( new JSONObject(params));
     }
 
-    @SuppressWarnings("unchecked")
-    protected JSONObject cnb_params(Map<String, String> params) {
+    protected void checkCnbParams(Map<String, String> params) {
         checkApiVersion(params);
         if (params.get("amount") == null)
             throw new NullPointerException("amount can't be null");
@@ -110,7 +109,6 @@ public class LiqPay {
             throw new NullPointerException("description can't be null");
         if (params.get("public_key") == null)
             params.put("public_key", publicKey);
-        return new JSONObject(params);
     }
 
     public void setProxy(String host, Integer port) {
