@@ -60,11 +60,11 @@ public class LiqPay {
     }
 
 
-    public String cnb_form(Map<String, String> list) {
-        String  language = list.get("language") != null ? list.get("language") : DEFAULT_LANG;
-        JSONObject json = cnb_params(list);
+    public String cnb_form(Map<String, String> params) {
+        String  language = params.get("language") != null ? params.get("language") : DEFAULT_LANG;
+        JSONObject json = cnb_params(params);
         String data = base64_encode(json.toString().getBytes());
-        String signature = cnb_signature(list);
+        String signature = cnb_signature(params);
         String form = renderHtmlForm(data, language, signature);
         return form;
     }
@@ -80,28 +80,28 @@ public class LiqPay {
     }
 
 
-    public String cnb_signature(Map<String, String> list) {
-        JSONObject json = cnb_params(list);
+    public String cnb_signature(Map<String, String> params) {
+        JSONObject json = cnb_params(params);
         String sign_str = privateKey + base64_encode(json.toString().getBytes()) + privateKey;
         return str_to_sign(sign_str);
     }
 
     @SuppressWarnings("unchecked")
-    protected JSONObject cnb_params(Map<String, String> list) {
-        if (list.get("version") == null)
+    protected JSONObject cnb_params(Map<String, String> params) {
+        if (params.get("version") == null)
             throw new NullPointerException("version can't be null");
-        if (list.get("amount") == null)
+        if (params.get("amount") == null)
             throw new NullPointerException("amount can't be null");
-        if (list.get("currency") == null)
+        if (params.get("currency") == null)
             throw new NullPointerException("currency can't be null");
-        if (list.get("description") == null)
+        if (params.get("description") == null)
             throw new NullPointerException("description can't be null");
 
-        if (list.get("public_key") == null)
-            list.put("public_key", publicKey);
+        if (params.get("public_key") == null)
+            params.put("public_key", publicKey);
 
         JSONObject json = new JSONObject();
-        for (Map.Entry<String, String> entry : list.entrySet())
+        for (Map.Entry<String, String> entry : params.entrySet())
             json.put(entry.getKey(), entry.getValue());
 
         return json;

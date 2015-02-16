@@ -1,5 +1,6 @@
 package com.liqpay;
 
+import org.json.simple.JSONObject;
 import org.junit.Test;
 
 import java.net.InetSocketAddress;
@@ -32,6 +33,67 @@ public class LiqPayTest {
         params.put("currency", "USD");
         params.put("description", "Description");
         return params;
+    }
+
+    @Test
+    public void testCnbParams() throws Exception {
+        LiqPay lp = new LiqPay("publicKey", "privateKey");
+        Map<String, String> params = defaultTestParams();
+        JSONObject cnbParams = lp.cnb_params(params);
+        assertEquals("eo", cnbParams.get("language"));
+        assertEquals("3.0", cnbParams.get("version"));
+        assertEquals("USD", cnbParams.get("currency"));
+        assertEquals("1.5", cnbParams.get("amount"));
+        assertEquals("Description", cnbParams.get("description"));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testCnbParamsTrowsNpeIfNotVersion() throws Exception {
+        LiqPay lp = new LiqPay("publicKey", "privateKey");
+        Map<String, String> params = defaultTestParams();
+        params.remove("version");
+        lp.cnb_params(params);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testCnbParamsTrowsNpeIfNotAmount() throws Exception {
+        LiqPay lp = new LiqPay("publicKey", "privateKey");
+        Map<String, String> params = defaultTestParams();
+        params.remove("amount");
+        lp.cnb_params(params);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testCnbParamsTrowsNpeIfNotCurrency() throws Exception {
+        LiqPay lp = new LiqPay("publicKey", "privateKey");
+        Map<String, String> params = defaultTestParams();
+        params.remove("currency");
+        lp.cnb_params(params);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testCnbParamsTrowsNpeIfNotDescription() throws Exception {
+        LiqPay lp = new LiqPay("publicKey", "privateKey");
+        Map<String, String> params = defaultTestParams();
+        params.remove("description");
+        lp.cnb_params(params);
+    }
+
+    @Test
+    public void testCnbParamsWillUseDefaultPublicKey() throws Exception {
+        LiqPay lp = new LiqPay("publicKey", "privateKey");
+        Map<String, String> params = defaultTestParams();
+        JSONObject cnbParams = lp.cnb_params(params);
+        assertEquals("publicKey", cnbParams.get("public_key"));
+    }
+
+    @Test
+    public void testCnbParamsOverwritePublicKey() throws Exception {
+        LiqPay lp = new LiqPay("publicKey", "privateKey");
+        Map<String, String> params = defaultTestParams();
+        JSONObject cnbParams = lp.cnb_params(params);
+        cnbParams.put("public_key", "overriden public key");
+        assertEquals("overriden public key", cnbParams.get("public_key"));
     }
 
     @Test
