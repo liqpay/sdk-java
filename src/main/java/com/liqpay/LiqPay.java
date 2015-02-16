@@ -63,10 +63,9 @@ public class LiqPay {
         checkApiVersion(params);
         JSONObject json = new JSONObject(params);
         json.put("public_key", publicKey);
-        String dataJson = base64_encode(json.toString());
-        String signature = str_to_sign(privateKey + dataJson + privateKey);
+        String signature = str_to_sign(privateKey + base64_encode(json.toString()) + privateKey);
         HashMap<String, String> data = new HashMap<>();
-        data.put("data", dataJson);
+        data.put("data", base64_encode(json.toString()));
         data.put("signature", signature);
         return data;
     }
@@ -99,8 +98,7 @@ public class LiqPay {
 
     protected String cnb_signature(Map<String, String> params) {
         JSONObject json = cnb_params(params);
-        String sign_str = privateKey + base64_encode(json.toString()) + privateKey;
-        return str_to_sign(sign_str);
+        return str_to_sign(privateKey + base64_encode(json.toString()) + privateKey);
     }
 
     @SuppressWarnings("unchecked")
