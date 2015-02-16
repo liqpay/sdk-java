@@ -13,13 +13,13 @@ import static com.liqpay.LiqPayUtil.base64_encode;
 import static com.liqpay.LiqPayUtil.sha1;
 
 public class LiqPay {
-    private Proxy __PROXY = null;
-    private String __PROXY_AUTH = null;
-
     public String liqpayApiUrl = "https://www.liqpay.com/api/";
     public String host_checkout = "https://www.liqpay.com/api/checkout";
+    private static final String DEFAULT_LANG = "ru";
     private final String publicKey;
     private final String privateKey;
+    private Proxy proxy;
+    private String proxyUser;
 
     public LiqPay(String publicKey, String privateKey) {
         this.publicKey = publicKey;
@@ -56,27 +56,26 @@ public class LiqPay {
         JSONObject jsonObj = (JSONObject) obj;
 
         HashMap<String, Object> res_json = LiqPayUtil.parseJson(jsonObj);
-
         return res_json;
     }
 
 
     public String cnb_form(Map<String, String> list) {
-        String language = "ru";
-        if (list.get("language") != null)
-            language = list.get("language");
-
+        String  language = list.get("language") != null ? list.get("language") : DEFAULT_LANG;
         JSONObject json = cnb_params(list);
         String data = base64_encode(json.toString().getBytes());
         String signature = cnb_signature(list);
+        String form = renderHtmlForm(data, language, signature);
+        return form;
+    }
 
+    private String renderHtmlForm(String data, String language, String signature) {
         String form = "";
         form += "<form method=\"post\" action=\"" + host_checkout + "\" accept-charset=\"utf-8\">\n";
         form += "<input type=\"hidden\" name=\"data\" value=\"" + data + "\" />\n";
         form += "<input type=\"hidden\" name=\"signature\" value=\"" + signature + "\" />\n";
         form += "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1" + language + ".radius.png\" name=\"btn_text\" />\n";
         form += "</form>\n";
-
         return form;
     }
 
@@ -110,24 +109,23 @@ public class LiqPay {
 
 
     public void setProxy(String host, Integer port) {
-        __PROXY = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
+        proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
     }
 
     public void setProxy(String host, Integer port, Proxy.Type type) {
-        __PROXY = new Proxy(type, new InetSocketAddress(host, port));
+        proxy = new Proxy(type, new InetSocketAddress(host, port));
     }
 
-
     public void setProxyUser(String login, String password) {
-        __PROXY_AUTH = base64_encode((login + ":" + password).getBytes());
+        proxyUser = base64_encode((login + ":" + password).getBytes());
     }
 
     public Proxy getProxy() {
-        return __PROXY;
+        return proxy;
     }
 
     public String getProxyUser() {
-        return __PROXY_AUTH;
+        return proxyUser;
     }
 
 
