@@ -8,6 +8,7 @@ import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.liqpay.LiqPayUtil.base64_encode;
 import static org.junit.Assert.*;
 
 public class LiqPayTest {
@@ -141,7 +142,8 @@ public class LiqPayTest {
         LiqPay lp = new LiqPay("publicKey", "privateKey");
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("field", "value");
-        assertEquals("d3dP/5qWQFlZgFR53eAwqJ+xIOQ=", lp.createSignature(jsonObject));
+        String base64EncodedData = base64_encode(jsonObject.toString());
+        assertEquals("d3dP/5qWQFlZgFR53eAwqJ+xIOQ=", lp.createSignature(base64EncodedData));
     }
 
     @Test

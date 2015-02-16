@@ -28,7 +28,7 @@ public class LiqPayUtil {
     }
 
     public static String base64_encode(String data) {
-        return DatatypeConverter.printBase64Binary(data.getBytes());
+        return base64_encode(data.getBytes());
     }
 
     public static ArrayList<Object> getArray(Object object2) throws ParseException {

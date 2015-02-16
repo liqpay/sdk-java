@@ -61,10 +61,11 @@ public class LiqPay {
         checkApiVersion(params);
         JSONObject json = new JSONObject(params);
         json.put("public_key", publicKey);
-        HashMap<String, String> data = new HashMap<>();
-        data.put("data", base64_encode(json.toString()));
-        data.put("signature", createSignature(json));
-        return data;
+        HashMap<String, String> apiData = new HashMap<>();
+        String data = base64_encode(json.toString());
+        apiData.put("data", data);
+        apiData.put("signature", createSignature(data));
+        return apiData;
     }
 
     protected void checkApiVersion(Map<String, String> params) {
@@ -79,8 +80,8 @@ public class LiqPay {
         checkCnbParams(params);
         JSONObject json = new JSONObject(params);
         String data = base64_encode(json.toString());
-        String signature = cnb_signature(params);
-        String  language = params.get("language") != null ? params.get("language") : DEFAULT_LANG;
+        String signature = createSignature(data);
+        String language = params.get("language") != null ? params.get("language") : DEFAULT_LANG;
         return renderHtmlForm(data, language, signature);
     }
 
@@ -96,7 +97,7 @@ public class LiqPay {
 
     protected String cnb_signature(Map<String, String> params) {
         checkCnbParams(params);
-        return createSignature( new JSONObject(params));
+        return createSignature(base64_encode(new JSONObject(params).toString()));
     }
 
     protected void checkCnbParams(Map<String, String> params) {
@@ -135,7 +136,7 @@ public class LiqPay {
         return base64_encode(sha1(str));
     }
 
-    protected String createSignature(JSONObject json) {
-        return str_to_sign(privateKey + base64_encode(json.toString()) + privateKey);
+    protected String createSignature(String base64EncodedData) {
+        return str_to_sign(privateKey + base64EncodedData + privateKey);
     }
 }
