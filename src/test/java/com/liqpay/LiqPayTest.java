@@ -136,6 +136,14 @@ public class LiqPayTest {
     }
 
     @Test
+    public void testCreateSignature() throws Exception {
+        LiqPay lp = new LiqPay("publicKey", "privateKey");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("field", "value");
+        assertEquals("d3dP/5qWQFlZgFR53eAwqJ+xIOQ=", lp.createSignature(jsonObject));
+    }
+
+    @Test
     public void testGenerateData() throws Exception {
         LiqPay lp = new LiqPay("publicKey", "privateKey");
         Map<String, String> invoiceParams = new HashMap<>();

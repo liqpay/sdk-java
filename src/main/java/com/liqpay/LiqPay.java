@@ -63,10 +63,9 @@ public class LiqPay {
         checkApiVersion(params);
         JSONObject json = new JSONObject(params);
         json.put("public_key", publicKey);
-        String signature = str_to_sign(privateKey + base64_encode(json.toString()) + privateKey);
         HashMap<String, String> data = new HashMap<>();
         data.put("data", base64_encode(json.toString()));
-        data.put("signature", signature);
+        data.put("signature", createSignature(json));
         return data;
     }
 
@@ -97,8 +96,7 @@ public class LiqPay {
     }
 
     protected String cnb_signature(Map<String, String> params) {
-        JSONObject json = cnb_params(params);
-        return str_to_sign(privateKey + base64_encode(json.toString()) + privateKey);
+        return createSignature(cnb_params(params));
     }
 
     @SuppressWarnings("unchecked")
@@ -110,10 +108,9 @@ public class LiqPay {
             throw new NullPointerException("currency can't be null");
         if (params.get("description") == null)
             throw new NullPointerException("description can't be null");
-        JSONObject json = new JSONObject(params);
-        if (json.get("public_key") == null)
-            json.put("public_key", publicKey);
-        return json;
+        if (params.get("public_key") == null)
+            params.put("public_key", publicKey);
+        return new JSONObject(params);
     }
 
     public void setProxy(String host, Integer port) {
@@ -138,5 +135,9 @@ public class LiqPay {
 
     public String str_to_sign(String str) {
         return base64_encode(sha1(str));
+    }
+
+    protected String createSignature(JSONObject json) {
+        return str_to_sign(privateKey + base64_encode(json.toString()) + privateKey);
     }
 }
