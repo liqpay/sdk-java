@@ -53,8 +53,15 @@ public class LiqPay {
 
     @SuppressWarnings("unchecked")
     public HashMap<String, Object> api(String path, Map<String, String> params) throws Exception {
-        if (params.get("version") == null)
-            throw new NullPointerException("version can't be null");
+        HashMap<String, String> data = generateData(params);
+        String resp = LiqPayRequest.post(liqpayApiUrl + path, data, this);
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObj = (JSONObject) parser.parse(resp);
+        return LiqPayUtil.parseJson(jsonObj);
+    }
+
+    protected HashMap<String, String> generateData(Map<String, String> params) {
+        checkApiVersion(params);
 
         JSONObject json = new JSONObject();
         json.put("public_key", publicKey);
@@ -68,24 +75,23 @@ public class LiqPay {
         HashMap<String, String> data = new HashMap<>();
         data.put("data", dataJson);
         data.put("signature", signature);
-        String resp = LiqPayRequest.post(liqpayApiUrl + path, data, this);
-
-        JSONParser parser = new JSONParser();
-        Object obj = parser.parse(resp);
-        JSONObject jsonObj = (JSONObject) obj;
-
-        HashMap<String, Object> res_json = LiqPayUtil.parseJson(jsonObj);
-        return res_json;
+        return data;
     }
 
+    protected void checkApiVersion(Map<String, String> params) {
+        if (params.get("version") == null)
+            throw new NullPointerException("version can't be null");
+        if (Double.parseDouble(params.get("version")) != 3.0D) {
+            throw new IllegalArgumentException("Unsupported version");
+        }
+    }
 
     public String cnb_form(Map<String, String> params) {
         String  language = params.get("language") != null ? params.get("language") : DEFAULT_LANG;
         JSONObject json = cnb_params(params);
         String data = base64_encode(json.toString().getBytes());
         String signature = cnb_signature(params);
-        String form = renderHtmlForm(data, language, signature);
-        return form;
+        return renderHtmlForm(data, language, signature);
     }
 
     private String renderHtmlForm(String data, String language, String signature) {
@@ -99,7 +105,7 @@ public class LiqPay {
     }
 
 
-    public String cnb_signature(Map<String, String> params) {
+    protected String cnb_signature(Map<String, String> params) {
         JSONObject json = cnb_params(params);
         String sign_str = privateKey + base64_encode(json.toString().getBytes()) + privateKey;
         return str_to_sign(sign_str);
@@ -107,8 +113,7 @@ public class LiqPay {
 
     @SuppressWarnings("unchecked")
     protected JSONObject cnb_params(Map<String, String> params) {
-        if (params.get("version") == null)
-            throw new NullPointerException("version can't be null");
+        checkApiVersion(params);
         if (params.get("amount") == null)
             throw new NullPointerException("amount can't be null");
         if (params.get("currency") == null)
@@ -149,7 +154,6 @@ public class LiqPay {
 
 
     public String str_to_sign(String str) {
-        String signature = base64_encode(sha1(str));
-        return signature;
+        return base64_encode(sha1(str));
     }
 }

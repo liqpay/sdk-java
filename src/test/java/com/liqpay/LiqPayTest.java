@@ -12,10 +12,10 @@ import static org.junit.Assert.*;
 
 public class LiqPayTest {
 
-    static final String FORM = "<form method=\"post\" action=\"https://www.liqpay.com/api/checkout\" accept-charset=\"utf-8\">\n"+
-            "<input type=\"hidden\" name=\"data\" value=\"eyJhbW91bnQiOiIxLjUiLCJkZXNjcmlwdGlvbiI6IkRlc2NyaXB0aW9uIiwibGFuZ3VhZ2UiOiJlbyIsInB1YmxpY19rZXkiOiJwdWJsaWNLZXkiLCJ2ZXJzaW9uIjoiMy4wIiwiY3VycmVuY3kiOiJVU0QifQ==\" />\n"+
-            "<input type=\"hidden\" name=\"signature\" value=\"f7mYsOPuQP0hOiThNFFxUy9OZuc=\" />\n"+
-            "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1eo.radius.png\" name=\"btn_text\" />\n"+
+    static final String FORM = "<form method=\"post\" action=\"https://www.liqpay.com/api/checkout\" accept-charset=\"utf-8\">\n" +
+            "<input type=\"hidden\" name=\"data\" value=\"eyJhbW91bnQiOiIxLjUiLCJkZXNjcmlwdGlvbiI6IkRlc2NyaXB0aW9uIiwibGFuZ3VhZ2UiOiJlbyIsInB1YmxpY19rZXkiOiJwdWJsaWNLZXkiLCJ2ZXJzaW9uIjoiMyIsImN1cnJlbmN5IjoiVVNEIn0=\" />\n" +
+            "<input type=\"hidden\" name=\"signature\" value=\"DEggXkxcCsuZFwt/R4+zDekMPZ4=\" />\n" +
+            "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1eo.radius.png\" name=\"btn_text\" />\n" +
             "</form>\n";
 
     @Test
@@ -25,10 +25,17 @@ public class LiqPayTest {
         assertEquals(FORM, lp.cnb_form(params));
     }
 
+    @Test
+    public void testCnbSignature() throws Exception {
+        LiqPay lp = new LiqPay("publicKey", "privateKey");
+        Map<String, String> params = defaultTestParams();
+        assertEquals("DEggXkxcCsuZFwt/R4+zDekMPZ4=", lp.cnb_signature(params));
+    }
+
     private Map<String, String> defaultTestParams() {
         Map<String, String> params = new HashMap<>();
         params.put("language", "eo");
-        params.put("version", "3.0");
+        params.put("version", "3");
         params.put("amount", "1.5");
         params.put("currency", "USD");
         params.put("description", "Description");
@@ -41,7 +48,7 @@ public class LiqPayTest {
         Map<String, String> params = defaultTestParams();
         JSONObject cnbParams = lp.cnb_params(params);
         assertEquals("eo", cnbParams.get("language"));
-        assertEquals("3.0", cnbParams.get("version"));
+        assertEquals("3", cnbParams.get("version"));
         assertEquals("USD", cnbParams.get("currency"));
         assertEquals("1.5", cnbParams.get("amount"));
         assertEquals("Description", cnbParams.get("description"));
@@ -126,5 +133,25 @@ public class LiqPayTest {
         LiqPay lp = new LiqPay("publicKey", "privateKey");
         lp.setProxyUser("user", "pass");
         assertEquals("dXNlcjpwYXNz", lp.getProxyUser());
+    }
+
+    @Test
+    public void testGenerateData() throws Exception {
+        LiqPay lp = new LiqPay("publicKey", "privateKey");
+        Map<String, String> invoiceParams = new HashMap<>();
+        invoiceParams.put("version", "3");
+        invoiceParams.put("email", "client-email@gmail.com");
+        invoiceParams.put("amount", "200");
+        invoiceParams.put("currency", "USD");
+        invoiceParams.put("order_id", "order_id_1");
+        invoiceParams.put("goods", "[{"
+                + "\"amount\": 100,"
+                + "\"count\": 2,"
+                + "\"unit\":\"шт.\","
+                + "\"name\":\"телефон\""
+                + "}]");
+        HashMap<String, String> generated = lp.generateData(invoiceParams);
+        assertEquals("wwZJZ8dnLFDGz9fLHxwVd/qU66s=", generated.get("signature"));
+        assertEquals("eyJhbW91bnQiOiIyMDAiLCJlbWFpbCI6ImNsaWVudC1lbWFpbEBnbWFpbC5jb20iLCJnb29kcyI6Ilt7XCJhbW91bnRcIjogMTAwLFwiY291bnRcIjogMixcInVuaXRcIjpcItGI0YIuXCIsXCJuYW1lXCI6XCLRgtC10LvQtdGE0L7QvVwifV0iLCJwdWJsaWNfa2V5IjoicHVibGljS2V5Iiwib3JkZXJfaWQiOiJvcmRlcl9pZF8xIiwidmVyc2lvbiI6IjMiLCJjdXJyZW5jeSI6IlVTRCJ9", generated.get("data"));
     }
 }
