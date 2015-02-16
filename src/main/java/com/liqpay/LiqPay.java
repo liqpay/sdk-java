@@ -44,7 +44,7 @@ public class LiqPay {
             json.put(entry.getKey(), entry.getValue());
 
         String dataJson = base64_encode(json.toString().getBytes());
-        String signature = base64_encode(sha1(privateKey + dataJson + privateKey));
+        String signature = str_to_sign(privateKey + dataJson + privateKey);
 
         HashMap<String, String> data = new HashMap<>();
         data.put("data", dataJson);
@@ -87,7 +87,7 @@ public class LiqPay {
     }
 
     @SuppressWarnings("unchecked")
-    private JSONObject cnb_params(Map<String, String> list) {
+    protected JSONObject cnb_params(Map<String, String> list) {
         if (list.get("version") == null)
             throw new NullPointerException("version can't be null");
         if (list.get("amount") == null)
