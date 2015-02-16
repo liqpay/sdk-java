@@ -2,7 +2,10 @@ package com.liqpay;
 
 import org.junit.Test;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -15,20 +18,51 @@ public class LiqPayTest {
             "</form>\n";
 
     @Test
-    public void testCnb_form() throws Exception {
+    public void testCnbForm() throws Exception {
         LiqPay lp = new LiqPay("publicKey", "privateKey");
-        HashMap<String, String> prams = new HashMap<>();
-        prams.put("language", "eo");
-        prams.put("version", "3.0");
-        prams.put("amount", "1.5");
-        prams.put("currency", "USD");
-        prams.put("description", "Description");
-        assertEquals(FORM, lp.cnb_form(prams));
+        Map<String, String> params = defaultTestParams();
+        assertEquals(FORM, lp.cnb_form(params));
+    }
+
+    private Map<String, String> defaultTestParams() {
+        Map<String, String> params = new HashMap<>();
+        params.put("language", "eo");
+        params.put("version", "3.0");
+        params.put("amount", "1.5");
+        params.put("currency", "USD");
+        params.put("description", "Description");
+        return params;
     }
 
     @Test
-    public void testStr_to_sign() throws Exception {
+    public void testStrToSign() throws Exception {
         LiqPay lp = new LiqPay("publicKey", "privateKey");
         assertEquals("i0XkvRxqy4i+v2QH0WIF9WfmKj4=", lp.str_to_sign("some string"));
+    }
+
+    @Test
+    public void testSetProxy() throws Exception {
+        LiqPay lp = new LiqPay("publicKey", "privateKey");
+        lp.setProxy("192.168.0.1", 9999, Proxy.Type.SOCKS);
+        Proxy p = lp.getProxy();
+        assertEquals("192.168.0.1", ((InetSocketAddress)p.address()).getHostName());
+        assertEquals(9999, ((InetSocketAddress) p.address()).getPort());
+        assertEquals(Proxy.Type.SOCKS, p.type());
+    }
+    @Test
+    public void testSetProxyHttp() throws Exception {
+        LiqPay lp = new LiqPay("publicKey", "privateKey");
+        lp.setProxy("192.168.0.1", 9999);
+        Proxy p = lp.getProxy();
+        assertEquals("192.168.0.1", ((InetSocketAddress)p.address()).getHostName());
+        assertEquals(9999, ((InetSocketAddress) p.address()).getPort());
+        assertEquals(Proxy.Type.HTTP, p.type());
+    }
+
+    @Test
+    public void testProxyUser() throws Exception {
+        LiqPay lp = new LiqPay("publicKey", "privateKey");
+        lp.setProxyUser("user", "pass");
+        assertEquals("dXNlcjpwYXNz", lp.getProxyUser());
     }
 }
