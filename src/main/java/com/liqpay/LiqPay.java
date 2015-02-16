@@ -3,7 +3,9 @@ package com.liqpay;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
@@ -20,27 +22,44 @@ public class LiqPay {
     private final String privateKey;
     private Proxy proxy;
     private String proxyUser;
+//    protected List<String> supportedCurrencies = Arrays.asList("EUR", "UAH", "USD", "RUB", "GEL");
+//    protected List<String> supportedParams = Arrays.asList("public_key", "amount", "currency", "description", "order_id", "result_url", "server_url", "type", "signature", "language", "sandbox");
 
     public LiqPay(String publicKey, String privateKey) {
         this.publicKey = publicKey;
         this.privateKey = privateKey;
+        checkRequired();
     }
 
     public LiqPay(String publicKey, String privateKey, String liqpayApiUrl) {
         this.publicKey = publicKey;
         this.privateKey = privateKey;
         this.liqpayApiUrl = liqpayApiUrl;
+        checkRequired();
     }
 
+    private void checkRequired() {
+        if (this.publicKey == null || this.publicKey.isEmpty()) {
+            throw new IllegalArgumentException("publicKey is empty");
+        }
+        if (this.privateKey == null || this.privateKey.isEmpty()) {
+            throw new IllegalArgumentException("privateKey is empty");
+        }
+        if (this.liqpayApiUrl == null || this.liqpayApiUrl.isEmpty()) {
+            throw new IllegalArgumentException("liqpayApiUrl is empty");
+        }
+    }
+
+
     @SuppressWarnings("unchecked")
-    public HashMap<String, Object> api(String path, Map<String, String> list) throws Exception {
-        if (list.get("version") == null)
+    public HashMap<String, Object> api(String path, Map<String, String> params) throws Exception {
+        if (params.get("version") == null)
             throw new NullPointerException("version can't be null");
 
         JSONObject json = new JSONObject();
         json.put("public_key", publicKey);
 
-        for (Map.Entry<String, String> entry : list.entrySet())
+        for (Map.Entry<String, String> entry : params.entrySet())
             json.put(entry.getKey(), entry.getValue());
 
         String dataJson = base64_encode(json.toString().getBytes());
