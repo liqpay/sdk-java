@@ -1,6 +1,7 @@
 package com.liqpay;
 
 import org.json.simple.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.net.InetSocketAddress;
@@ -19,16 +20,21 @@ public class LiqPayTest {
             "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1eo.radius.png\" name=\"btn_text\" />\n" +
             "</form>\n";
 
+    LiqPay lp;
+
+    @Before
+    public void setUp(){
+        lp = new LiqPay("publicKey", "privateKey");
+    }
+
     @Test
     public void testCnbForm() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
         Map<String, String> params = defaultTestParams();
         assertEquals(FORM, lp.cnb_form(params));
     }
 
     @Test
     public void testCnbSignature() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
         Map<String, String> params = defaultTestParams();
         assertEquals("DEggXkxcCsuZFwt/R4+zDekMPZ4=", lp.cnb_signature(params));
     }
@@ -45,7 +51,6 @@ public class LiqPayTest {
 
     @Test
     public void testCnbParams() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
         Map<String, String> cnbParams = defaultTestParams();
         lp.checkCnbParams(cnbParams);
         assertEquals("eo", cnbParams.get("language"));
@@ -57,7 +62,6 @@ public class LiqPayTest {
 
     @Test(expected = NullPointerException.class)
     public void testCnbParamsTrowsNpeIfNotVersion() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
         Map<String, String> params = defaultTestParams();
         params.remove("version");
         lp.checkCnbParams(params);
@@ -65,7 +69,6 @@ public class LiqPayTest {
 
     @Test(expected = NullPointerException.class)
     public void testCnbParamsTrowsNpeIfNotAmount() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
         Map<String, String> params = defaultTestParams();
         params.remove("amount");
         lp.checkCnbParams(params);
@@ -73,7 +76,6 @@ public class LiqPayTest {
 
     @Test(expected = NullPointerException.class)
     public void testCnbParamsTrowsNpeIfNotCurrency() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
         Map<String, String> params = defaultTestParams();
         params.remove("currency");
         lp.checkCnbParams(params);
@@ -81,7 +83,6 @@ public class LiqPayTest {
 
     @Test(expected = NullPointerException.class)
     public void testCnbParamsTrowsNpeIfNotDescription() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
         Map<String, String> params = defaultTestParams();
         params.remove("description");
         lp.checkCnbParams(params);
@@ -89,7 +90,6 @@ public class LiqPayTest {
 
     @Test
     public void testCnbParamsWillUseDefaultPublicKey() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
         Map<String, String> cnbParams = defaultTestParams();
         cnbParams.remove("public_key");
         lp.checkCnbParams(cnbParams);
@@ -98,7 +98,6 @@ public class LiqPayTest {
 
     @Test
     public void testCnbParamsOverwritePublicKey() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
         Map<String, String> cnbParams = defaultTestParams();
         cnbParams.put("public_key", "overriden public key");
         lp.checkCnbParams(cnbParams);
@@ -107,13 +106,11 @@ public class LiqPayTest {
 
     @Test
     public void testStrToSign() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
         assertEquals("i0XkvRxqy4i+v2QH0WIF9WfmKj4=", lp.str_to_sign("some string"));
     }
 
     @Test
     public void testSetProxy() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
         lp.setProxy("192.168.0.1", 9999, Proxy.Type.SOCKS);
         Proxy p = lp.getProxy();
         assertEquals("192.168.0.1", ((InetSocketAddress)p.address()).getHostName());
@@ -122,7 +119,6 @@ public class LiqPayTest {
     }
     @Test
     public void testSetProxyHttp() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
         lp.setProxy("192.168.0.1", 9999);
         Proxy p = lp.getProxy();
         assertEquals("192.168.0.1", ((InetSocketAddress)p.address()).getHostName());
@@ -132,14 +128,12 @@ public class LiqPayTest {
 
     @Test
     public void testProxyUser() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
         lp.setProxyUser("user", "pass");
         assertEquals("dXNlcjpwYXNz", lp.getProxyUser());
     }
 
     @Test
     public void testCreateSignature() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("field", "value");
         String base64EncodedData = base64_encode(jsonObject.toString());
@@ -148,7 +142,6 @@ public class LiqPayTest {
 
     @Test
     public void testGenerateData() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
         Map<String, String> invoiceParams = new HashMap<>();
         invoiceParams.put("version", "3");
         invoiceParams.put("email", "client-email@gmail.com");
@@ -158,11 +151,11 @@ public class LiqPayTest {
         invoiceParams.put("goods", "[{"
                 + "\"amount\": 100,"
                 + "\"count\": 2,"
-                + "\"unit\":\"шт.\","
-                + "\"name\":\"телефон\""
+                + "\"unit\":\"un.\","
+                + "\"name\":\"phone\""
                 + "}]");
-        HashMap<String, String> generated = lp.generateData(invoiceParams);
-        assertEquals("wwZJZ8dnLFDGz9fLHxwVd/qU66s=", generated.get("signature"));
-        assertEquals("eyJhbW91bnQiOiIyMDAiLCJlbWFpbCI6ImNsaWVudC1lbWFpbEBnbWFpbC5jb20iLCJnb29kcyI6Ilt7XCJhbW91bnRcIjogMTAwLFwiY291bnRcIjogMixcInVuaXRcIjpcItGI0YIuXCIsXCJuYW1lXCI6XCLRgtC10LvQtdGE0L7QvVwifV0iLCJwdWJsaWNfa2V5IjoicHVibGljS2V5Iiwib3JkZXJfaWQiOiJvcmRlcl9pZF8xIiwidmVyc2lvbiI6IjMiLCJjdXJyZW5jeSI6IlVTRCJ9", generated.get("data"));
+        Map<String, String> generated = lp.generateData(invoiceParams);
+        assertEquals("BBqfzW6vH1aZxMS3BIGTWVftEO8=", generated.get("signature"));
+        assertEquals("eyJhbW91bnQiOiIyMDAiLCJlbWFpbCI6ImNsaWVudC1lbWFpbEBnbWFpbC5jb20iLCJnb29kcyI6Ilt7XCJhbW91bnRcIjogMTAwLFwiY291bnRcIjogMixcInVuaXRcIjpcInVuLlwiLFwibmFtZVwiOlwicGhvbmVcIn1dIiwicHVibGljX2tleSI6InB1YmxpY0tleSIsIm9yZGVyX2lkIjoib3JkZXJfaWRfMSIsInZlcnNpb24iOiIzIiwiY3VycmVuY3kiOiJVU0QifQ==", generated.get("data"));
     }
 }
