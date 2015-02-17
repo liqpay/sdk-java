@@ -1,10 +1,9 @@
 package com.liqpay;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public interface LiqPayApi {
-    HashMap<String, Object> api(String path, Map<String, String> params) throws Exception;
+    Map<String, Object> api(String path, Map<String, String> params) throws Exception;
 
     /**
      * Liq&Buy

@@ -41,18 +41,18 @@ public class LiqPay implements LiqPayApi {
     }
 
     @Override
-    public HashMap<String, Object> api(String path, Map<String, String> params) throws Exception {
-        HashMap<String, String> data = generateData(params);
+    public Map<String, Object> api(String path, Map<String, String> params) throws Exception {
+        Map<String, String> data = generateData(params);
         String resp = LiqPayRequest.post(LIQPAY_API_URL + path, data, this);
         JSONObject jsonObj = (JSONObject) parser.parse(resp);
         return LiqPayUtil.parseJson(jsonObj);
     }
 
     @SuppressWarnings("unchecked")
-    protected HashMap<String, String> generateData(Map<String, String> params) {
+    protected Map<String, String> generateData(Map<String, String> params) {
         JSONObject json = new JSONObject(params);
         setBasicApiParams(json);
-        HashMap<String, String> apiData = new HashMap<>();
+        Map<String, String> apiData = new HashMap<>();
         String data = base64_encode(json.toString());
         apiData.put("data", data);
         apiData.put("signature", createSignature(data));

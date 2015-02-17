@@ -4,7 +4,7 @@ import java.security.MessageDigest;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
+import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -31,9 +31,8 @@ public class LiqPayUtil {
         return base64_encode(data.getBytes());
     }
 
-    public static ArrayList<Object> getArray(Object object2) throws ParseException {
+    public static ArrayList<Object> getArray(JSONArray jsonArr) throws ParseException {
         ArrayList<Object> list = new ArrayList<Object>();
-        JSONArray jsonArr = (JSONArray) object2;
         for (Object aJsonArr : jsonArr) {
             if (aJsonArr instanceof JSONObject) {
                 list.add(parseJson((JSONObject) aJsonArr));
@@ -44,19 +43,16 @@ public class LiqPayUtil {
         return list;
     }
 
-
-    public static HashMap<String, Object> parseJson(JSONObject jsonObject) throws ParseException {
+    public static Map<String, Object> parseJson(JSONObject jsonObject) throws ParseException {
         HashMap<String, Object> data = new HashMap<String, Object>();
-        @SuppressWarnings("unchecked")
-        Set<Object> set = jsonObject.keySet();
-        for (Object obj : set) {
-            if (jsonObject.get(obj) instanceof JSONArray) {
-                data.put(obj.toString(), getArray(jsonObject.get(obj)));
+        for (Map.Entry<String, Object> entry: ((Map<String, Object>)jsonObject).entrySet()) {
+            if (entry.getValue() instanceof JSONArray) {
+                data.put(entry.getKey(), getArray((JSONArray)(entry.getValue())));
             } else {
-                if (jsonObject.get(obj) instanceof JSONObject) {
-                    data.put(obj.toString(), parseJson((JSONObject) jsonObject.get(obj)));
+                if (entry.getValue() instanceof JSONObject) {
+                    data.put(entry.getKey(), parseJson((JSONObject) entry.getValue()));
                 } else {
-                    data.put(obj.toString(), jsonObject.get(obj));
+                    data.put(entry.getKey(), entry.getValue());
                 }
             }
         }
