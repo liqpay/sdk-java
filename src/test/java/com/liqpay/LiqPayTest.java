@@ -14,8 +14,8 @@ import static org.junit.Assert.*;
 public class LiqPayTest {
 
     static final String FORM = "<form method=\"post\" action=\"https://www.liqpay.com/api/checkout\" accept-charset=\"utf-8\">\n" +
-            "<input type=\"hidden\" name=\"data\" value=\"eyJhbW91bnQiOiIxLjUiLCJkZXNjcmlwdGlvbiI6IkRlc2NyaXB0aW9uIiwicHVibGljX2tleSI6InB1YmxpY0tleSIsImxhbmd1YWdlIjoiZW8iLCJ2ZXJzaW9uIjoiMyIsImN1cnJlbmN5IjoiVVNEIn0=\" />\n" +
-            "<input type=\"hidden\" name=\"signature\" value=\"m1NvnUAecFzH6rHxOe0JAlMTUxY=\" />\n" +
+            "<input type=\"hidden\" name=\"data\" value=\"eyJhbW91bnQiOiIxLjUiLCJkZXNjcmlwdGlvbiI6IkRlc2NyaXB0aW9uIiwibGFuZ3VhZ2UiOiJlbyIsInB1YmxpY19rZXkiOiJwdWJsaWNLZXkiLCJ2ZXJzaW9uIjoiMyIsImN1cnJlbmN5IjoiVVNEIn0=\" />\n" +
+            "<input type=\"hidden\" name=\"signature\" value=\"DEggXkxcCsuZFwt/R4+zDekMPZ4=\" />\n" +
             "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1eo.radius.png\" name=\"btn_text\" />\n" +
             "</form>\n";
 
@@ -125,7 +125,7 @@ public class LiqPayTest {
                 + "\"unit\":\"шт.\","
                 + "\"name\":\"телефон\""
                 + "}]");
-        Map<String, String> generated = lp.generateData(invoiceParams);
+        HashMap<String, String> generated = lp.generateData(invoiceParams);
         assertEquals("wwZJZ8dnLFDGz9fLHxwVd/qU66s=", generated.get("signature"));
         assertEquals("eyJhbW91bnQiOiIyMDAiLCJlbWFpbCI6ImNsaWVudC1lbWFpbEBnbWFpbC5jb20iLCJnb29kcyI6Ilt7XCJhbW91bnRcIjogMTAwLFwiY291bnRcIjogMixcInVuaXRcIjpcItGI0YIuXCIsXCJuYW1lXCI6XCLRgtC10LvQtdGE0L7QvVwifV0iLCJwdWJsaWNfa2V5IjoicHVibGljS2V5Iiwib3JkZXJfaWQiOiJvcmRlcl9pZF8xIiwidmVyc2lvbiI6IjMiLCJjdXJyZW5jeSI6IlVTRCJ9", generated.get("data"));
     }
