@@ -17,12 +17,12 @@ public class LiqPay implements LiqPayApi {
      * @deprecated Use a constant {@link #LIQPAY_API_URL}
      */
     @Deprecated
-    public String liqpayApiUrl = "https://www.liqpay.com/api/";
+    public String liqpayApiUrl = LIQPAY_API_URL;
     /**
      * @deprecated Use a constant {@link #LIQPAY_API_CHECKOUT_URL}
      */
     @Deprecated
-    public String host_checkout = "https://www.liqpay.com/api/checkout";
+    public String host_checkout = LIQPAY_API_CHECKOUT_URL;
     private static final String LIQPAY_API_URL = "https://www.liqpay.com/api/";
     private static final String LIQPAY_API_CHECKOUT_URL = "https://www.liqpay.com/api/checkout";
     private static final String DEFAULT_LANG = "ru";
@@ -63,7 +63,7 @@ public class LiqPay implements LiqPayApi {
     @Override
     public HashMap<String, Object> api(String path, Map<String, String> params) throws Exception {
         HashMap<String, String> data = generateData(params);
-        String resp = LiqPayRequest.post(liqpayApiUrl + path, data, this);
+        String resp = LiqPayRequest.post(LIQPAY_API_URL + path, data, this);
         JSONObject jsonObj = (JSONObject) parser.parse(resp);
         return LiqPayUtil.parseJson(jsonObj);
     }
@@ -100,7 +100,7 @@ public class LiqPay implements LiqPayApi {
 
     private String renderHtmlForm(String data, String language, String signature) {
         String form = "";
-        form += "<form method=\"post\" action=\"" + host_checkout + "\" accept-charset=\"utf-8\">\n";
+        form += "<form method=\"post\" action=\"" + LIQPAY_API_CHECKOUT_URL + "\" accept-charset=\"utf-8\">\n";
         form += "<input type=\"hidden\" name=\"data\" value=\"" + data + "\" />\n";
         form += "<input type=\"hidden\" name=\"signature\" value=\"" + signature + "\" />\n";
         form += "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1" + language + ".radius.png\" name=\"btn_text\" />\n";
