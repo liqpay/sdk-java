@@ -148,14 +148,9 @@ public class LiqPayTest {
         invoiceParams.put("amount", "200");
         invoiceParams.put("currency", "USD");
         invoiceParams.put("order_id", "order_id_1");
-        invoiceParams.put("goods", "[{"
-                + "\"amount\": 100,"
-                + "\"count\": 2,"
-                + "\"unit\":\"un.\","
-                + "\"name\":\"phone\""
-                + "}]");
+        invoiceParams.put("goods", "[{amount: 100, count: 2, unit: 'un.', name: 'phone'}]");
         Map<String, String> generated = lp.generateData(invoiceParams);
-        assertEquals("BBqfzW6vH1aZxMS3BIGTWVftEO8=", generated.get("signature"));
-        assertEquals("eyJhbW91bnQiOiIyMDAiLCJlbWFpbCI6ImNsaWVudC1lbWFpbEBnbWFpbC5jb20iLCJnb29kcyI6Ilt7XCJhbW91bnRcIjogMTAwLFwiY291bnRcIjogMixcInVuaXRcIjpcInVuLlwiLFwibmFtZVwiOlwicGhvbmVcIn1dIiwicHVibGljX2tleSI6InB1YmxpY0tleSIsIm9yZGVyX2lkIjoib3JkZXJfaWRfMSIsInZlcnNpb24iOiIzIiwiY3VycmVuY3kiOiJVU0QifQ==", generated.get("data"));
+        assertEquals("qU/Ms2zhS43H8VISlHeHgCOdjJc=", generated.get("signature"));
+        assertEquals("eyJhbW91bnQiOiIyMDAiLCJlbWFpbCI6ImNsaWVudC1lbWFpbEBnbWFpbC5jb20iLCJnb29kcyI6Ilt7YW1vdW50OiAxMDAsIGNvdW50OiAyLCB1bml0OiAndW4uJywgbmFtZTogJ3Bob25lJ31dIiwicHVibGljX2tleSI6InB1YmxpY0tleSIsIm9yZGVyX2lkIjoib3JkZXJfaWRfMSIsInZlcnNpb24iOiIzIiwiY3VycmVuY3kiOiJVU0QifQ==", generated.get("data"));
     }
 }
