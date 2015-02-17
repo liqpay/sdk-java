@@ -13,20 +13,22 @@ import org.json.simple.JSONObject;
 
 public class LiqPayUtil {
     public static byte[] sha1(String param) {
-        MessageDigest SHA = null;
         try {
-            SHA = MessageDigest.getInstance("SHA-1");
+            MessageDigest SHA = MessageDigest.getInstance("SHA-1");
             SHA.reset();
             SHA.update(param.getBytes("UTF-8"));
+            return SHA.digest();
         } catch (Exception e) {
             throw new RuntimeException("Can't calc SHA-1 hash", e);
         }
-        return SHA.digest();
     }
 
     public static String base64_encode(byte[] bytes) {
-        String str = DatatypeConverter.printBase64Binary(bytes);
-        return str;
+        return DatatypeConverter.printBase64Binary(bytes);
+    }
+
+    public static String base64_encode(String data) {
+        return base64_encode(data.getBytes());
     }
 
     public static ArrayList<Object> getArray(Object object2) throws ParseException {
