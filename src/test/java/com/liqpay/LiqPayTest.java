@@ -26,17 +26,9 @@ public class LiqPayTest {
         assertEquals(FORM, lp.cnb_form(params));
     }
 
-    @Test
-    public void testCnbSignature() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
-        Map<String, String> params = defaultTestParams();
-        assertEquals("DEggXkxcCsuZFwt/R4+zDekMPZ4=", lp.cnb_signature(params));
-    }
-
     private Map<String, String> defaultTestParams() {
         Map<String, String> params = new HashMap<>();
         params.put("language", "eo");
-        params.put("version", "3");
         params.put("amount", "1.5");
         params.put("currency", "USD");
         params.put("description", "Description");
@@ -49,18 +41,9 @@ public class LiqPayTest {
         Map<String, String> cnbParams = defaultTestParams();
         lp.checkCnbParams(cnbParams);
         assertEquals("eo", cnbParams.get("language"));
-        assertEquals("3", cnbParams.get("version"));
         assertEquals("USD", cnbParams.get("currency"));
         assertEquals("1.5", cnbParams.get("amount"));
         assertEquals("Description", cnbParams.get("description"));
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testCnbParamsTrowsNpeIfNotVersion() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
-        Map<String, String> params = defaultTestParams();
-        params.remove("version");
-        lp.checkCnbParams(params);
     }
 
     @Test(expected = NullPointerException.class)
@@ -88,21 +71,12 @@ public class LiqPayTest {
     }
 
     @Test
-    public void testCnbParamsWillUseDefaultPublicKey() throws Exception {
+    public void testSetBasicApiParams() throws Exception {
         LiqPay lp = new LiqPay("publicKey", "privateKey");
-        Map<String, String> cnbParams = defaultTestParams();
-        cnbParams.remove("public_key");
-        lp.checkCnbParams(cnbParams);
+        Map<String, String> cnbParams = new HashMap<>();
+        lp.setBasicApiParams(cnbParams);
         assertEquals("publicKey", cnbParams.get("public_key"));
-    }
-
-    @Test
-    public void testCnbParamsOverwritePublicKey() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
-        Map<String, String> cnbParams = defaultTestParams();
-        cnbParams.put("public_key", "overriden public key");
-        lp.checkCnbParams(cnbParams);
-        assertEquals("overriden public key", cnbParams.get("public_key"));
+        assertEquals("3", cnbParams.get("version"));
     }
 
     @Test
@@ -119,15 +93,6 @@ public class LiqPayTest {
         assertEquals("192.168.0.1", ((InetSocketAddress)p.address()).getHostName());
         assertEquals(9999, ((InetSocketAddress) p.address()).getPort());
         assertEquals(Proxy.Type.SOCKS, p.type());
-    }
-    @Test
-    public void testSetProxyHttp() throws Exception {
-        LiqPay lp = new LiqPay("publicKey", "privateKey");
-        lp.setProxy("192.168.0.1", 9999);
-        Proxy p = lp.getProxy();
-        assertEquals("192.168.0.1", ((InetSocketAddress)p.address()).getHostName());
-        assertEquals(9999, ((InetSocketAddress) p.address()).getPort());
-        assertEquals(Proxy.Type.HTTP, p.type());
     }
 
     @Test
@@ -150,7 +115,6 @@ public class LiqPayTest {
     public void testGenerateData() throws Exception {
         LiqPay lp = new LiqPay("publicKey", "privateKey");
         Map<String, String> invoiceParams = new HashMap<>();
-        invoiceParams.put("version", "3");
         invoiceParams.put("email", "client-email@gmail.com");
         invoiceParams.put("amount", "200");
         invoiceParams.put("currency", "USD");

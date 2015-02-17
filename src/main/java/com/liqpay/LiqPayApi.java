@@ -17,13 +17,7 @@ public interface LiqPayApi {
      * data - function result base64_encode( $json_string )
      * signature - function result base64_encode( sha1( $private_key . $data . $private_key ) )
      * @param params
-     * @return
+     * @return HTML form
      */
     String cnb_form(Map<String, String> params);
-    /**
-     * Signature for form
-     * @deprecated  You don't need it, because it already generated {@link #cnb_form(Map)}}
-     */
-    @Deprecated
-    String cnb_signature(Map<String, String> params);
 }

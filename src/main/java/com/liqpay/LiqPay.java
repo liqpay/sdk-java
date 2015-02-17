@@ -13,16 +13,7 @@ import static com.liqpay.LiqPayUtil.base64_encode;
 import static com.liqpay.LiqPayUtil.sha1;
 
 public class LiqPay implements LiqPayApi {
-    /**
-     * @deprecated Use a constant {@link #LIQPAY_API_URL}
-     */
-    @Deprecated
-    public String liqpayApiUrl = LIQPAY_API_URL;
-    /**
-     * @deprecated Use a constant {@link #LIQPAY_API_CHECKOUT_URL}
-     */
-    @Deprecated
-    public String host_checkout = LIQPAY_API_CHECKOUT_URL;
+    private static final String API_VERSION = "3";
     private static final String LIQPAY_API_URL = "https://www.liqpay.com/api/";
     private static final String LIQPAY_API_CHECKOUT_URL = "https://www.liqpay.com/api/checkout";
     private static final String DEFAULT_LANG = "ru";
@@ -40,23 +31,12 @@ public class LiqPay implements LiqPayApi {
         checkRequired();
     }
 
-    @Deprecated
-    public LiqPay(String publicKey, String privateKey, String liqpayApiUrl) {
-        this.publicKey = publicKey;
-        this.privateKey = privateKey;
-        this.liqpayApiUrl = liqpayApiUrl;
-        checkRequired();
-    }
-
     private void checkRequired() {
         if (this.publicKey == null || this.publicKey.isEmpty()) {
             throw new IllegalArgumentException("publicKey is empty");
         }
         if (this.privateKey == null || this.privateKey.isEmpty()) {
             throw new IllegalArgumentException("privateKey is empty");
-        }
-        if (this.liqpayApiUrl == null || this.liqpayApiUrl.isEmpty()) {
-            throw new IllegalArgumentException("liqpayApiUrl is empty");
         }
     }
 
@@ -70,9 +50,8 @@ public class LiqPay implements LiqPayApi {
 
     @SuppressWarnings("unchecked")
     protected HashMap<String, String> generateData(Map<String, String> params) {
-        checkApiVersion(params);
         JSONObject json = new JSONObject(params);
-        json.put("public_key", publicKey);
+        setBasicApiParams(json);
         HashMap<String, String> apiData = new HashMap<>();
         String data = base64_encode(json.toString());
         apiData.put("data", data);
@@ -80,18 +59,16 @@ public class LiqPay implements LiqPayApi {
         return apiData;
     }
 
-    protected void checkApiVersion(Map<String, String> params) {
-        if (params.get("version") == null)
-            throw new NullPointerException("version can't be null");
-        if (Double.parseDouble(params.get("version")) != 3.0D) {
-            throw new IllegalArgumentException("Unsupported version");
-        }
+    protected void setBasicApiParams(Map params) {
+        params.put("public_key", publicKey);
+        params.put("version", API_VERSION);
     }
 
     @Override
     public String cnb_form(Map<String, String> params) {
         checkCnbParams(params);
         JSONObject json = new JSONObject(params);
+        setBasicApiParams(json);
         String data = base64_encode(json.toString());
         String signature = createSignature(data);
         String language = params.get("language") != null ? params.get("language") : DEFAULT_LANG;
@@ -108,35 +85,13 @@ public class LiqPay implements LiqPayApi {
         return form;
     }
 
-    /**
-     * Signature for form
-     * @deprecated  You don't need it, because it already generated {@link #cnb_form(Map)}}
-     */
-    @Deprecated
-    @Override
-    public String cnb_signature(Map<String, String> params) {
-        checkCnbParams(params);
-        return createSignature(base64_encode(new JSONObject(params).toString()));
-    }
-
     protected void checkCnbParams(Map<String, String> params) {
-        checkApiVersion(params);
         if (params.get("amount") == null)
             throw new NullPointerException("amount can't be null");
         if (params.get("currency") == null)
             throw new NullPointerException("currency can't be null");
         if (params.get("description") == null)
             throw new NullPointerException("description can't be null");
-        if (params.get("public_key") == null)
-            params.put("public_key", publicKey);
-    }
-
-    /**
-     * @deprecated Just use a full version {@link #setProxy(String, Integer, Proxy.Type)}
-     */
-    @Deprecated
-    public void setProxy(String host, Integer port) {
-        proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
     }
 
     public void setProxy(String host, Integer port, Proxy.Type type) {
@@ -155,11 +110,7 @@ public class LiqPay implements LiqPayApi {
         return proxyUser;
     }
 
-    /**
-     * @deprecated It's low level method. Why you use it?
-     */
-    @Deprecated
-    public String str_to_sign(String str) {
+    protected String str_to_sign(String str) {
         return base64_encode(sha1(str));
     }
 
