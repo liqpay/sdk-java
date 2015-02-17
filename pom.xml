@@ -1,10 +1,10 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.liqpay</groupId>
     <artifactId>liqpay-sdk</artifactId>
     <packaging>jar</packaging>
-    <name>LiqPay API</name>
-    <version>0.2</version>
+    <name>LiqPay payments API</name>
+    <version>0.4-SNAPSHOT</version>
     <url>https://www.liqpay.com/ru/doc</url>
     <licenses>
         <license>
@@ -13,10 +13,17 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:git:https://github.com/liqpay/sdk-java.git</connection>
-        <developerConnection>scm:git:https://github.com/liqpay/sdk-java.git</developerConnection>
-        <url>https://github.com/liqpay/sdk-java</url>
+        <connection>scm:git:https://github.com/stokito/sdk-java.git</connection>
+        <developerConnection>scm:git:https://github.com/stokito/sdk-java.git</developerConnection>
+        <url>https://github.com/stokito/sdk-java</url>
+        <tag>v0.4</tag>
     </scm>
+    <distributionManagement>
+        <repository>
+            <id>bintray</id>
+            <url>https://api.bintray.com/maven/stokito/maven/liqpay-sdk</url>
+        </repository>
+    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -53,7 +60,48 @@
                   <target>1.7</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.4.1</version>
+                <configuration>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
 
