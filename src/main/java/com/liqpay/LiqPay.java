@@ -12,9 +12,19 @@ import org.json.simple.parser.JSONParser;
 import static com.liqpay.LiqPayUtil.base64_encode;
 import static com.liqpay.LiqPayUtil.sha1;
 
-public class LiqPay {
+public class LiqPay implements LiqPayApi {
+    /**
+     * @deprecated Use a constant {@link #LIQPAY_API_URL}
+     */
+    @Deprecated
     public String liqpayApiUrl = "https://www.liqpay.com/api/";
+    /**
+     * @deprecated Use a constant {@link #LIQPAY_API_CHECKOUT_URL}
+     */
+    @Deprecated
     public String host_checkout = "https://www.liqpay.com/api/checkout";
+    private static final String LIQPAY_API_URL = "https://www.liqpay.com/api/";
+    private static final String LIQPAY_API_CHECKOUT_URL = "https://www.liqpay.com/api/checkout";
     private static final String DEFAULT_LANG = "ru";
     private final JSONParser parser = new JSONParser();
     private final String publicKey;
@@ -30,6 +40,7 @@ public class LiqPay {
         checkRequired();
     }
 
+    @Deprecated
     public LiqPay(String publicKey, String privateKey, String liqpayApiUrl) {
         this.publicKey = publicKey;
         this.privateKey = privateKey;
@@ -49,6 +60,7 @@ public class LiqPay {
         }
     }
 
+    @Override
     public HashMap<String, Object> api(String path, Map<String, String> params) throws Exception {
         HashMap<String, String> data = generateData(params);
         String resp = LiqPayRequest.post(liqpayApiUrl + path, data, this);
@@ -76,6 +88,7 @@ public class LiqPay {
         }
     }
 
+    @Override
     public String cnb_form(Map<String, String> params) {
         checkCnbParams(params);
         JSONObject json = new JSONObject(params);
@@ -95,7 +108,13 @@ public class LiqPay {
         return form;
     }
 
-    protected String cnb_signature(Map<String, String> params) {
+    /**
+     * Signature for form
+     * @deprecated  You don't need it, because it already generated {@link #cnb_form(Map)}}
+     */
+    @Deprecated
+    @Override
+    public String cnb_signature(Map<String, String> params) {
         checkCnbParams(params);
         return createSignature(base64_encode(new JSONObject(params).toString()));
     }
@@ -112,6 +131,10 @@ public class LiqPay {
             params.put("public_key", publicKey);
     }
 
+    /**
+     * @deprecated Just use a full version {@link #setProxy(String, Integer, Proxy.Type)}
+     */
+    @Deprecated
     public void setProxy(String host, Integer port) {
         proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
     }
@@ -132,6 +155,10 @@ public class LiqPay {
         return proxyUser;
     }
 
+    /**
+     * @deprecated It's low level method. Why you use it?
+     */
+    @Deprecated
     public String str_to_sign(String str) {
         return base64_encode(sha1(str));
     }
