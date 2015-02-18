@@ -87,15 +87,6 @@ public class LiqPayTest {
     }
 
     @Test
-    public void testSetProxy() throws Exception {
-        lp.setProxy("192.168.0.1", 9999, Proxy.Type.SOCKS);
-        Proxy p = lp.getProxy();
-        assertEquals("192.168.0.1", ((InetSocketAddress)p.address()).getHostName());
-        assertEquals(9999, ((InetSocketAddress) p.address()).getPort());
-        assertEquals(Proxy.Type.SOCKS, p.type());
-    }
-
-    @Test
     public void testCreateSignature() throws Exception {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("field", "value");

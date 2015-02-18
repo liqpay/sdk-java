@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
@@ -12,7 +13,7 @@ import static com.liqpay.LiqPayUtil.base64_encode;
 
 public class LiqPayRequest {
 
-    public static String post(String url, Map<String, String> list, LiqPay lp, String proxyLogin, String proxyPassword) throws Exception {
+    public static String post(String url, Map<String, String> list, String proxyLogin, String proxyPassword, Proxy proxy) throws Exception {
         String urlParameters = "";
 
         for (Map.Entry<String, String> entry : list.entrySet())
@@ -22,10 +23,10 @@ public class LiqPayRequest {
         DataOutputStream wr;
         BufferedReader in;
         HttpURLConnection con;
-        if (lp.getProxy() == null) {
+        if (proxy == null) {
             con = (HttpURLConnection) obj.openConnection();
         } else {
-            con = (HttpURLConnection) obj.openConnection(lp.getProxy());
+            con = (HttpURLConnection) obj.openConnection(proxy);
             if (proxyLogin != null)
                 con.setRequestProperty("Proxy-Authorization", "Basic " + getProxyUser(proxyLogin, proxyPassword));
         }

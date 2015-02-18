@@ -41,7 +41,7 @@ public class LiqPay implements LiqPayApi {
     @Override
     public Map<String, Object> api(String path, Map<String, String> params) throws Exception {
         Map<String, String> data = generateData(params);
-        String resp = LiqPayRequest.post(LIQPAY_API_URL + path, data, this, this.getProxyLogin(), this.getProxyPassword());
+        String resp = LiqPayRequest.post(LIQPAY_API_URL + path, data, this.getProxyLogin(), this.getProxyPassword(), this.getProxy());
         JSONObject jsonObj = (JSONObject) parser.parse(resp);
         return LiqPayUtil.parseJson(jsonObj);
     }
@@ -89,19 +89,8 @@ public class LiqPay implements LiqPayApi {
             throw new NullPointerException("description can't be null");
     }
 
-    @Deprecated
-    public void setProxy(String host, Integer port, Proxy.Type type) {
-        proxy = new Proxy(type, new InetSocketAddress(host, port));
-    }
-
     public void setProxy(Proxy proxy) {
         this.proxy = proxy;
-    }
-
-    @Deprecated
-    public void setProxyUser(String login, String password) {
-        this.proxyPassword = password;
-        this.proxyLogin = login;
     }
 
     public Proxy getProxy() {
