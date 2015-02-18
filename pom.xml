@@ -14,9 +14,9 @@
     </licenses>
     <scm>
         <connection>scm:git:https://github.com/stokito/sdk-java.git</connection>
-        <developerConnection>scm:git:https://github.com/stokito/sdk-java.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:stokito/sdk-java.git</developerConnection>
         <url>https://github.com/stokito/sdk-java</url>
-        <tag>v0.4</tag>
+        <tag>HEAD</tag>
     </scm>
     <distributionManagement>
         <repository>
