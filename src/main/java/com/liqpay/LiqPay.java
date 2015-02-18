@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -13,6 +14,7 @@ import static com.liqpay.LiqPayUtil.base64_encode;
 import static com.liqpay.LiqPayUtil.sha1;
 
 public class LiqPay implements LiqPayApi {
+    public static final String API_VERSION = "3";
     /**
      * @deprecated Use a constant {@link #LIQPAY_API_URL}
      */
@@ -70,29 +72,25 @@ public class LiqPay implements LiqPayApi {
 
     @SuppressWarnings("unchecked")
     protected HashMap<String, String> generateData(Map<String, String> params) {
-        checkApiVersion(params);
-        JSONObject json = new JSONObject(params);
-        json.put("public_key", publicKey);
         HashMap<String, String> apiData = new HashMap<>();
-        String data = base64_encode(json.toString());
+        System.out.println(JSONObject.toJSONString(withBasicApiParams(params)));
+        String data = base64_encode(JSONObject.toJSONString(withBasicApiParams(params)));
         apiData.put("data", data);
         apiData.put("signature", createSignature(data));
         return apiData;
     }
 
-    protected void checkApiVersion(Map<String, String> params) {
-        if (params.get("version") == null)
-            throw new NullPointerException("version can't be null");
-        if (Double.parseDouble(params.get("version")) != 3.0D) {
-            throw new IllegalArgumentException("Unsupported version");
-        }
+    protected TreeMap<String, String> withBasicApiParams(Map<String, String> params) {
+        TreeMap<String, String> tm = new TreeMap<>(params);
+        tm.put("public_key", publicKey);
+        tm.put("version", API_VERSION);
+        return tm;
     }
 
     @Override
     public String cnb_form(Map<String, String> params) {
         checkCnbParams(params);
-        JSONObject json = new JSONObject(params);
-        String data = base64_encode(json.toString());
+        String data = base64_encode(JSONObject.toJSONString(withBasicApiParams(params)));
         String signature = createSignature(data);
         String language = params.get("language") != null ? params.get("language") : DEFAULT_LANG;
         return renderHtmlForm(data, language, signature);
@@ -116,19 +114,16 @@ public class LiqPay implements LiqPayApi {
     @Override
     public String cnb_signature(Map<String, String> params) {
         checkCnbParams(params);
-        return createSignature(base64_encode(new JSONObject(params).toString()));
+        return createSignature(base64_encode(JSONObject.toJSONString(withBasicApiParams(params))));
     }
 
     protected void checkCnbParams(Map<String, String> params) {
-        checkApiVersion(params);
         if (params.get("amount") == null)
             throw new NullPointerException("amount can't be null");
         if (params.get("currency") == null)
             throw new NullPointerException("currency can't be null");
         if (params.get("description") == null)
             throw new NullPointerException("description can't be null");
-        if (params.get("public_key") == null)
-            params.put("public_key", publicKey);
     }
 
     /**

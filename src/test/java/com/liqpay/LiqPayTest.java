@@ -6,8 +6,7 @@ import org.junit.Test;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.liqpay.LiqPayUtil.base64_encode;
 import static org.junit.Assert.*;
@@ -15,8 +14,8 @@ import static org.junit.Assert.*;
 public class LiqPayTest {
 
     static final String FORM = "<form method=\"post\" action=\"https://www.liqpay.com/api/checkout\" accept-charset=\"utf-8\">\n" +
-            "<input type=\"hidden\" name=\"data\" value=\"eyJhbW91bnQiOiIxLjUiLCJkZXNjcmlwdGlvbiI6IkRlc2NyaXB0aW9uIiwibGFuZ3VhZ2UiOiJlbyIsInB1YmxpY19rZXkiOiJwdWJsaWNLZXkiLCJ2ZXJzaW9uIjoiMyIsImN1cnJlbmN5IjoiVVNEIn0=\" />\n" +
-            "<input type=\"hidden\" name=\"signature\" value=\"DEggXkxcCsuZFwt/R4+zDekMPZ4=\" />\n" +
+            "<input type=\"hidden\" name=\"data\" value=\"eyJhbW91bnQiOiIxLjUiLCJjdXJyZW5jeSI6IlVTRCIsImRlc2NyaXB0aW9uIjoiRGVzY3JpcHRpb24iLCJsYW5ndWFnZSI6ImVvIiwicHVibGljX2tleSI6InB1YmxpY0tleSIsInZlcnNpb24iOiIzIn0=\" />\n" +
+            "<input type=\"hidden\" name=\"signature\" value=\"EgQW6JPjpAdM/He8UlhUfDwlvKI=\" />\n" +
             "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1eo.radius.png\" name=\"btn_text\" />\n" +
             "</form>\n";
 
@@ -29,29 +28,32 @@ public class LiqPayTest {
 
     @Test
     public void testCnbForm() throws Exception {
-        Map<String, String> params = defaultTestParams();
+        Map<String, String> params = defaultTestParams(null);
         assertEquals(FORM, lp.cnb_form(params));
     }
 
     @Test
     public void testCnbSignature() throws Exception {
-        Map<String, String> params = defaultTestParams();
-        assertEquals("DEggXkxcCsuZFwt/R4+zDekMPZ4=", lp.cnb_signature(params));
+        Map<String, String> params = defaultTestParams(null);
+        assertEquals("EgQW6JPjpAdM/He8UlhUfDwlvKI=", lp.cnb_signature(params));
     }
 
-    private Map<String, String> defaultTestParams() {
-        Map<String, String> params = new HashMap<>();
-        params.put("language", "eo");
+    private Map<String, String> defaultTestParams(String removedKey) {
+        Map<String, String> params = new TreeMap<>();
         params.put("version", "3");
+        params.put("language", "eo");
         params.put("amount", "1.5");
         params.put("currency", "USD");
         params.put("description", "Description");
-        return params;
+        if (removedKey!= null) {
+            params.remove(removedKey);
+        }
+        return Collections.unmodifiableMap(params);
     }
 
     @Test
     public void testCnbParams() throws Exception {
-        Map<String, String> cnbParams = defaultTestParams();
+        Map<String, String> cnbParams = defaultTestParams(null);
         lp.checkCnbParams(cnbParams);
         assertEquals("eo", cnbParams.get("language"));
         assertEquals("3", cnbParams.get("version"));
@@ -61,47 +63,30 @@ public class LiqPayTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testCnbParamsTrowsNpeIfNotVersion() throws Exception {
-        Map<String, String> params = defaultTestParams();
-        params.remove("version");
-        lp.checkCnbParams(params);
-    }
-
-    @Test(expected = NullPointerException.class)
     public void testCnbParamsTrowsNpeIfNotAmount() throws Exception {
-        Map<String, String> params = defaultTestParams();
-        params.remove("amount");
+        Map<String, String> params = defaultTestParams("amount");
         lp.checkCnbParams(params);
     }
 
     @Test(expected = NullPointerException.class)
     public void testCnbParamsTrowsNpeIfNotCurrency() throws Exception {
-        Map<String, String> params = defaultTestParams();
-        params.remove("currency");
+        Map<String, String> params = defaultTestParams("currency");
         lp.checkCnbParams(params);
     }
 
     @Test(expected = NullPointerException.class)
     public void testCnbParamsTrowsNpeIfNotDescription() throws Exception {
-        Map<String, String> params = defaultTestParams();
-        params.remove("description");
+        Map<String, String> params = defaultTestParams("description");
         lp.checkCnbParams(params);
     }
 
     @Test
-    public void testCnbParamsWillUseDefaultPublicKey() throws Exception {
-        Map<String, String> cnbParams = defaultTestParams();
-        cnbParams.remove("public_key");
-        lp.checkCnbParams(cnbParams);
-        assertEquals("publicKey", cnbParams.get("public_key"));
-    }
-
-    @Test
-    public void testCnbParamsOverwritePublicKey() throws Exception {
-        Map<String, String> cnbParams = defaultTestParams();
-        cnbParams.put("public_key", "overriden public key");
-        lp.checkCnbParams(cnbParams);
-        assertEquals("overriden public key", cnbParams.get("public_key"));
+    public void testWithBasicApiParams() throws Exception {
+        Map<String, String> cnbParams = defaultTestParams(null);
+        Map fullParams = lp.withBasicApiParams(cnbParams);
+        assertEquals("publicKey", fullParams.get("public_key"));
+        assertEquals("3", fullParams.get("version"));
+        assertEquals("1.5", fullParams.get("amount"));
     }
 
     @Test
@@ -142,15 +127,15 @@ public class LiqPayTest {
 
     @Test
     public void testGenerateData() throws Exception {
-        Map<String, String> invoiceParams = new HashMap<>();
+        Map<String, String> invoiceParams = new TreeMap<>();
         invoiceParams.put("version", "3");
         invoiceParams.put("email", "client-email@gmail.com");
         invoiceParams.put("amount", "200");
         invoiceParams.put("currency", "USD");
         invoiceParams.put("order_id", "order_id_1");
         invoiceParams.put("goods", "[{amount: 100, count: 2, unit: 'un.', name: 'phone'}]");
-        Map<String, String> generated = lp.generateData(invoiceParams);
-        assertEquals("qU/Ms2zhS43H8VISlHeHgCOdjJc=", generated.get("signature"));
-        assertEquals("eyJhbW91bnQiOiIyMDAiLCJlbWFpbCI6ImNsaWVudC1lbWFpbEBnbWFpbC5jb20iLCJnb29kcyI6Ilt7YW1vdW50OiAxMDAsIGNvdW50OiAyLCB1bml0OiAndW4uJywgbmFtZTogJ3Bob25lJ31dIiwicHVibGljX2tleSI6InB1YmxpY0tleSIsIm9yZGVyX2lkIjoib3JkZXJfaWRfMSIsInZlcnNpb24iOiIzIiwiY3VycmVuY3kiOiJVU0QifQ==", generated.get("data"));
+        Map<String, String> generated = lp.generateData(Collections.unmodifiableMap(invoiceParams));
+        assertEquals("DqcGjvo2aXgt0+zBZECdH4cbPWY=", generated.get("signature"));
+        assertEquals("eyJhbW91bnQiOiIyMDAiLCJjdXJyZW5jeSI6IlVTRCIsImVtYWlsIjoiY2xpZW50LWVtYWlsQGdtYWlsLmNvbSIsImdvb2RzIjoiW3thbW91bnQ6IDEwMCwgY291bnQ6IDIsIHVuaXQ6ICd1bi4nLCBuYW1lOiAncGhvbmUnfV0iLCJvcmRlcl9pZCI6Im9yZGVyX2lkXzEiLCJwdWJsaWNfa2V5IjoicHVibGljS2V5IiwidmVyc2lvbiI6IjMifQ==", generated.get("data"));
     }
 }
