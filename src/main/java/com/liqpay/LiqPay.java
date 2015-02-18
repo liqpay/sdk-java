@@ -104,7 +104,7 @@ public class LiqPay implements LiqPayApi {
     protected TreeMap<String, String> withSandboxParam(TreeMap<String, String> params) {
         if (params.get("sandbox") == null && isCnbSandbox()) {
             TreeMap<String, String> tm = new TreeMap<>(params);
-            tm.put("sanbox", "1");
+            tm.put("sandbox", "1");
             return tm;
         }
         return params;
@@ -113,7 +113,7 @@ public class LiqPay implements LiqPayApi {
     @Override
     public String cnb_form(Map<String, String> params) {
         checkCnbParams(params);
-        String data = base64_encode(JSONObject.toJSONString(withBasicApiParams(params)));
+        String data = base64_encode(JSONObject.toJSONString(withSandboxParam(withBasicApiParams(params))));
         String signature = createSignature(data);
         String language = params.get("language") != null ? params.get("language") : DEFAULT_LANG;
         return renderHtmlForm(data, language, signature);

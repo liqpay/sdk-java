@@ -3,9 +3,11 @@ LiqPay.com API SDK for Java
 
 [![Build Status](https://travis-ci.org/stokito/sdk-java.png?branch=master)](https://travis-ci.org/stokito/sdk-java)
 
-LiqPay is payment system associated with [PrivatBank](https://privatbank.ua/). 
+[LiqPay.com](https://LiqPay.com/) is payment system associated with [PrivatBank](https://privatbank.ua/). 
 
 API Documentation [in Russian](https://www.liqpay.com/ru/doc) and [in English](https://www.liqpay.com/en/doc)
+
+**WARNING:** This SDK is not thread safe. We would be very appreciated for your contribution.
 
 Installation and usage
 ----------------------
@@ -28,28 +30,41 @@ Add to your `pom.xml` repository and dependency:
 <dependency>
     <groupId>com.liqpay</groupId>
     <artifactId>liqpay-sdk</artifactId>
-    <version>0.5</version>
+    <version>0.6</version>
 </dependency>
 ```
 
 Then you can use it as described in API documentation:
  
 ```java
- // Creation of the HTML-form
- Map params = new HashMap();
- params.put("version", "3");
- params.put("amount", "1");
- params.put("currency", "USD");
- params.put("description", "description text");
- params.put("order_id", "order_id_1");	
- LiqPay liqpay = new LiqPay(PUBLIC_KEY, PRIVATE_KEY);
- String html = liqpay.cnb_form(params);		
- System.out.println(html);
+// Creation of the HTML-form
+Map params = new HashMap();
+params.put("amount", "1.50");
+params.put("currency", "USD");
+params.put("description", "description text");
+params.put("order_id", "order_id_1");	
+params.put("sandbox", "1"); // enable the testing environment and card will NOT charged. If not set will be used property isCnbSandbox() 
+LiqPay liqpay = new LiqPay(PUBLIC_KEY, PRIVATE_KEY);
+String html = liqpay.cnb_form(params);		
+System.out.println(html);
 ```
 
 It is recommended to use some Inversion of Control (IoC) container, like [Spring IoC](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/beans.html) or [PicoContainer](http://picocontainer.codehaus.org/). 
 
-**WARNING:** This SDK is not thread safe. We would be very appreciated for your contribution.
+#### Use proxy
+
+To use `LiqPay` with proxy you can initialize it like:
+
+```java
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+
+...
+
+    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("proxy.host.com", 8080);
+    LiqPay liqpay = new LiqPay(PUBLIC_KEY, PRIVATE_KEY, proxy, "proxyLogin", "some proxy password");
+```
+
 
 ### Grails v2.x
 
@@ -65,7 +80,7 @@ grails.project.dependency.resolution = {
     }
     dependencies {
         ...
-        compile 'com.liqpay:liqpay-sdk:0.5'
+        compile 'com.liqpay:liqpay-sdk:0.6'
     }
 ...
 }
@@ -78,7 +93,9 @@ import com.liqpay.LiqPay
 
 // Place your Spring DSL code here
 beans = {
-    liqpay(LiqPay, '${com.liqpay.publicKey}', '${com.liqpay.privateKey}')
+    liqpay(LiqPay, '${com.liqpay.publicKey}', '${com.liqpay.privateKey}') {
+        cnbSandbox = false // set true to enable the testing environment. Card is not charged
+    }
 }
 ```
 
@@ -100,8 +117,8 @@ class UserController {
                 "amount"     : '30.5',
                 "currency"   : 'UAH',
                 "description": 'Balance replenishmenton on example.com',
-                "order_id"   : 1,
-                'result_url' : g.createLink(action: 'profile', absolute: true).toString()]
+                "order_id"   : "1",
+                'result_url' : g.createLink(action: 'paymentResult', absolute: true).toString()]
         String button = liqpay.cnb_form(params);
         [button: button]
     }

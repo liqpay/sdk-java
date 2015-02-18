@@ -4,8 +4,6 @@ import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.util.*;
 
 import static com.liqpay.LiqPayUtil.base64_encode;
@@ -13,9 +11,15 @@ import static org.junit.Assert.*;
 
 public class LiqPayTest {
 
-    static final String FORM = "<form method=\"post\" action=\"https://www.liqpay.com/api/checkout\" accept-charset=\"utf-8\">\n" +
+    static final String CNB_FORM_WITHOUT_SANDBOX = "<form method=\"post\" action=\"https://www.liqpay.com/api/checkout\" accept-charset=\"utf-8\">\n" +
             "<input type=\"hidden\" name=\"data\" value=\"eyJhbW91bnQiOiIxLjUiLCJjdXJyZW5jeSI6IlVTRCIsImRlc2NyaXB0aW9uIjoiRGVzY3JpcHRpb24iLCJsYW5ndWFnZSI6ImVvIiwicHVibGljX2tleSI6InB1YmxpY0tleSIsInZlcnNpb24iOiIzIn0=\" />\n" +
             "<input type=\"hidden\" name=\"signature\" value=\"EgQW6JPjpAdM/He8UlhUfDwlvKI=\" />\n" +
+            "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1eo.radius.png\" name=\"btn_text\" />\n" +
+            "</form>\n";
+
+    static final String CNB_FORM_WITH_SANDBOX = "<form method=\"post\" action=\"https://www.liqpay.com/api/checkout\" accept-charset=\"utf-8\">\n" +
+            "<input type=\"hidden\" name=\"data\" value=\"eyJhbW91bnQiOiIxLjUiLCJjdXJyZW5jeSI6IlVTRCIsImRlc2NyaXB0aW9uIjoiRGVzY3JpcHRpb24iLCJsYW5ndWFnZSI6ImVvIiwicHVibGljX2tleSI6InB1YmxpY0tleSIsInNhbmRib3giOiIxIiwidmVyc2lvbiI6IjMifQ==\" />\n" +
+            "<input type=\"hidden\" name=\"signature\" value=\"jyccctcnfKejrL0S1TCZmhLXHhU=\" />\n" +
             "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1eo.radius.png\" name=\"btn_text\" />\n" +
             "</form>\n";
 
@@ -27,9 +31,22 @@ public class LiqPayTest {
     }
 
     @Test
-    public void testCnbForm() throws Exception {
+    public void testCnbFormWithoutSandboxParam() throws Exception {
+        Map<String, String> params = defaultTestParams("sandbox");
+        assertEquals(CNB_FORM_WITHOUT_SANDBOX, lp.cnb_form(params));
+    }
+
+    @Test
+    public void testCnbFormWithSandboxParam() throws Exception {
         Map<String, String> params = defaultTestParams(null);
-        assertEquals(FORM, lp.cnb_form(params));
+        assertEquals(CNB_FORM_WITH_SANDBOX, lp.cnb_form(params));
+    }
+
+    @Test
+    public void testCnbFormWillSetSandboxParamIfItEnabledGlobally() throws Exception {
+        Map<String, String> params = defaultTestParams("sandbox");
+        lp.setCnbSandbox(true);
+        assertEquals(CNB_FORM_WITH_SANDBOX, lp.cnb_form(params));
     }
 
     private Map<String, String> defaultTestParams(String removedKey) {
@@ -38,6 +55,7 @@ public class LiqPayTest {
         params.put("amount", "1.5");
         params.put("currency", "USD");
         params.put("description", "Description");
+        params.put("sandbox", "1");
         if (removedKey!= null) {
             params.remove(removedKey);
         }
