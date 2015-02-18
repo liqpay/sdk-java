@@ -96,19 +96,6 @@ public class LiqPayTest {
     }
 
     @Test
-    public void testSetProxyUser() throws Exception {
-        lp.setProxyUser("user", "pass");
-        assertEquals("dXNlcjpwYXNz", lp.getProxyUser());
-    }
-
-    @Test
-    public void testGetProxyUser() throws Exception {
-        lp.setProxyLogin("user");
-        lp.setProxyPassword("pass");
-        assertEquals("dXNlcjpwYXNz", lp.getProxyUser());
-    }
-
-    @Test
     public void testCreateSignature() throws Exception {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("field", "value");

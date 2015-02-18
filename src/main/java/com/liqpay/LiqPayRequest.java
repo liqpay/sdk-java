@@ -8,9 +8,11 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
 
+import static com.liqpay.LiqPayUtil.base64_encode;
+
 public class LiqPayRequest {
 
-    public static String post(String url, Map<String, String> list, LiqPay lp) throws Exception {
+    public static String post(String url, Map<String, String> list, LiqPay lp, String proxyLogin, String proxyPassword) throws Exception {
         String urlParameters = "";
 
         for (Map.Entry<String, String> entry : list.entrySet())
@@ -24,8 +26,8 @@ public class LiqPayRequest {
             con = (HttpURLConnection) obj.openConnection();
         } else {
             con = (HttpURLConnection) obj.openConnection(lp.getProxy());
-            if (lp.getProxyUser() != null)
-                con.setRequestProperty("Proxy-Authorization", "Basic " + lp.getProxyUser());
+            if (proxyLogin != null)
+                con.setRequestProperty("Proxy-Authorization", "Basic " + getProxyUser(proxyLogin, proxyPassword));
         }
         con.setRequestMethod("POST");
         con.setDoOutput(true);
@@ -44,5 +46,9 @@ public class LiqPayRequest {
         }
         in.close();
         return response.toString();
+    }
+
+    public static String getProxyUser(String proxyLogin, String proxyPassword) {
+        return base64_encode(proxyLogin + ":" + proxyPassword);
     }
 }

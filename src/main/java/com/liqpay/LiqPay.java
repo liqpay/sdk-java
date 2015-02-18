@@ -41,7 +41,7 @@ public class LiqPay implements LiqPayApi {
     @Override
     public Map<String, Object> api(String path, Map<String, String> params) throws Exception {
         Map<String, String> data = generateData(params);
-        String resp = LiqPayRequest.post(LIQPAY_API_URL + path, data, this);
+        String resp = LiqPayRequest.post(LIQPAY_API_URL + path, data, this, this.getProxyLogin(), this.getProxyPassword());
         JSONObject jsonObj = (JSONObject) parser.parse(resp);
         return LiqPayUtil.parseJson(jsonObj);
     }
@@ -106,11 +106,6 @@ public class LiqPay implements LiqPayApi {
 
     public Proxy getProxy() {
         return proxy;
-    }
-
-    @Deprecated
-    public String getProxyUser() {
-        return base64_encode(proxyLogin + ":" + proxyPassword);
     }
 
     protected String str_to_sign(String str) {
