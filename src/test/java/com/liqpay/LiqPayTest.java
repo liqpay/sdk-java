@@ -12,15 +12,15 @@ import static org.junit.Assert.*;
 public class LiqPayTest {
 
     static final String CNB_FORM_WITHOUT_SANDBOX = "<form method=\"post\" action=\"https://www.liqpay.com/api/checkout\" accept-charset=\"utf-8\">\n" +
-            "<input type=\"hidden\" name=\"data\" value=\"eyJhbW91bnQiOiIxLjUiLCJjdXJyZW5jeSI6IlVTRCIsImRlc2NyaXB0aW9uIjoiRGVzY3JpcHRpb24iLCJsYW5ndWFnZSI6ImVvIiwicHVibGljX2tleSI6InB1YmxpY0tleSIsInZlcnNpb24iOiIzIn0=\" />\n" +
-            "<input type=\"hidden\" name=\"signature\" value=\"EgQW6JPjpAdM/He8UlhUfDwlvKI=\" />\n" +
-            "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1eo.radius.png\" name=\"btn_text\" />\n" +
+            "<input type=\"hidden\" name=\"data\" value=\"eyJhbW91bnQiOiIxLjUiLCJjdXJyZW5jeSI6IlVTRCIsImRlc2NyaXB0aW9uIjoiRGVzY3JpcHRpb24iLCJsYW5ndWFnZSI6ImVuIiwicHVibGljX2tleSI6InB1YmxpY0tleSIsInZlcnNpb24iOiIzIn0=\" />\n" +
+            "<input type=\"hidden\" name=\"signature\" value=\"krCwuK4CBtNFAb6zqmJCeR/85VU=\" />\n" +
+            "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1en.radius.png\" name=\"btn_text\" />\n" +
             "</form>\n";
 
     static final String CNB_FORM_WITH_SANDBOX = "<form method=\"post\" action=\"https://www.liqpay.com/api/checkout\" accept-charset=\"utf-8\">\n" +
-            "<input type=\"hidden\" name=\"data\" value=\"eyJhbW91bnQiOiIxLjUiLCJjdXJyZW5jeSI6IlVTRCIsImRlc2NyaXB0aW9uIjoiRGVzY3JpcHRpb24iLCJsYW5ndWFnZSI6ImVvIiwicHVibGljX2tleSI6InB1YmxpY0tleSIsInNhbmRib3giOiIxIiwidmVyc2lvbiI6IjMifQ==\" />\n" +
-            "<input type=\"hidden\" name=\"signature\" value=\"jyccctcnfKejrL0S1TCZmhLXHhU=\" />\n" +
-            "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1eo.radius.png\" name=\"btn_text\" />\n" +
+            "<input type=\"hidden\" name=\"data\" value=\"eyJhbW91bnQiOiIxLjUiLCJjdXJyZW5jeSI6IlVTRCIsImRlc2NyaXB0aW9uIjoiRGVzY3JpcHRpb24iLCJsYW5ndWFnZSI6ImVuIiwicHVibGljX2tleSI6InB1YmxpY0tleSIsInNhbmRib3giOiIxIiwidmVyc2lvbiI6IjMifQ==\" />\n" +
+            "<input type=\"hidden\" name=\"signature\" value=\"jDmdwKnagO2JhE1ONHdk3F7FG0c=\" />\n" +
+            "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1en.radius.png\" name=\"btn_text\" />\n" +
             "</form>\n";
 
     LiqPay lp;
@@ -51,7 +51,7 @@ public class LiqPayTest {
 
     private Map<String, String> defaultTestParams(String removedKey) {
         Map<String, String> params = new TreeMap<>();
-        params.put("language", "eo");
+        params.put("language", "en");
         params.put("amount", "1.5");
         params.put("currency", "USD");
         params.put("description", "Description");
@@ -66,7 +66,7 @@ public class LiqPayTest {
     public void testCnbParams() throws Exception {
         Map<String, String> cnbParams = defaultTestParams(null);
         lp.checkCnbParams(cnbParams);
-        assertEquals("eo", cnbParams.get("language"));
+        assertEquals("en", cnbParams.get("language"));
         assertEquals("USD", cnbParams.get("currency"));
         assertEquals("1.5", cnbParams.get("amount"));
         assertEquals("Description", cnbParams.get("description"));
