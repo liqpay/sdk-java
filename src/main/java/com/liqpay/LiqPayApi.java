@@ -4,6 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public interface LiqPayApi {
+    String API_VERSION = "3";
+    String LIQPAY_API_URL = "https://www.liqpay.com/api/";
+    String LIQPAY_API_CHECKOUT_URL = "https://www.liqpay.com/api/checkout";
+    String DEFAULT_LANG = "ru";
+
     Map<String, Object> api(String path, Map<String, String> params) throws Exception;
 
     /**

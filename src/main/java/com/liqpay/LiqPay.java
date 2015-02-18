@@ -14,10 +14,6 @@ import static com.liqpay.LiqPayUtil.base64_encode;
 import static com.liqpay.LiqPayUtil.sha1;
 
 public class LiqPay implements LiqPayApi {
-    public static final String API_VERSION = "3";
-    private static final String LIQPAY_API_URL = "https://www.liqpay.com/api/";
-    private static final String LIQPAY_API_CHECKOUT_URL = "https://www.liqpay.com/api/checkout";
-    private static final String DEFAULT_LANG = "ru";
     private final JSONParser parser = new JSONParser();
     private final String publicKey;
     private final String privateKey;
