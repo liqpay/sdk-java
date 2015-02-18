@@ -29,6 +29,15 @@ public class LiqPay implements LiqPayApi {
         checkRequired();
     }
 
+    public LiqPay(String publicKey, String privateKey, Proxy proxy, String proxyLogin, String proxyPassword) {
+        this.publicKey = publicKey;
+        this.privateKey = privateKey;
+        this.proxy = proxy;
+        this.proxyLogin = proxyLogin;
+        this.proxyPassword = proxyPassword;
+        checkRequired();
+    }
+
     private void checkRequired() {
         if (this.publicKey == null || this.publicKey.isEmpty()) {
             throw new IllegalArgumentException("publicKey is empty");
@@ -36,6 +45,30 @@ public class LiqPay implements LiqPayApi {
         if (this.privateKey == null || this.privateKey.isEmpty()) {
             throw new IllegalArgumentException("privateKey is empty");
         }
+    }
+
+    public void setProxy(Proxy proxy) {
+        this.proxy = proxy;
+    }
+
+    public Proxy getProxy() {
+        return proxy;
+    }
+
+    public String getProxyLogin() {
+        return proxyLogin;
+    }
+
+    public String getProxyPassword() {
+        return proxyPassword;
+    }
+
+    public void setProxyLogin(String proxyLogin) {
+        this.proxyLogin = proxyLogin;
+    }
+
+    public void setProxyPassword(String proxyPassword) {
+        this.proxyPassword = proxyPassword;
     }
 
     @Override
@@ -89,35 +122,11 @@ public class LiqPay implements LiqPayApi {
             throw new NullPointerException("description can't be null");
     }
 
-    public void setProxy(Proxy proxy) {
-        this.proxy = proxy;
-    }
-
-    public Proxy getProxy() {
-        return proxy;
-    }
-
     protected String str_to_sign(String str) {
         return base64_encode(sha1(str));
     }
 
     protected String createSignature(String base64EncodedData) {
         return str_to_sign(privateKey + base64EncodedData + privateKey);
-    }
-
-    public String getProxyLogin() {
-        return proxyLogin;
-    }
-
-    public String getProxyPassword() {
-        return proxyPassword;
-    }
-
-    public void setProxyLogin(String proxyLogin) {
-        this.proxyLogin = proxyLogin;
-    }
-
-    public void setProxyPassword(String proxyPassword) {
-        this.proxyPassword = proxyPassword;
     }
 }
