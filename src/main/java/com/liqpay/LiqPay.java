@@ -1,7 +1,5 @@
 package com.liqpay;
 
-
-import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +18,7 @@ public class LiqPay implements LiqPayApi {
     private Proxy proxy;
     private String proxyLogin;
     private String proxyPassword;
+    private boolean cnbSandbox;
 //    protected List<String> supportedCurrencies = Arrays.asList("EUR", "UAH", "USD", "RUB", "GEL");
 //    protected List<String> supportedParams = Arrays.asList("public_key", "amount", "currency", "description", "order_id", "result_url", "server_url", "type", "signature", "language", "sandbox");
 
@@ -71,6 +70,14 @@ public class LiqPay implements LiqPayApi {
         this.proxyPassword = proxyPassword;
     }
 
+    public boolean isCnbSandbox() {
+        return cnbSandbox;
+    }
+
+    public void setCnbSandbox(boolean cnbSandbox) {
+        this.cnbSandbox = cnbSandbox;
+    }
+
     @Override
     public Map<String, Object> api(String path, Map<String, String> params) throws Exception {
         Map<String, String> data = generateData(params);
@@ -92,6 +99,15 @@ public class LiqPay implements LiqPayApi {
         tm.put("public_key", publicKey);
         tm.put("version", API_VERSION);
         return tm;
+    }
+
+    protected TreeMap<String, String> withSandboxParam(TreeMap<String, String> params) {
+        if (params.get("sandbox") == null && isCnbSandbox()) {
+            TreeMap<String, String> tm = new TreeMap<>(params);
+            tm.put("sanbox", "1");
+            return tm;
+        }
+        return params;
     }
 
     @Override
