@@ -167,20 +167,22 @@ Changelog
 - Deprecated shorthand method `setProxy(String host, Integer port)`, you should use full `setProxy(String host, Integer port, Proxy.Type)` instead. In next release v0.5 it will be deprecated too, and you should construct `Proxy` instance yourself.
 - API wasn't changed and this release can't broke compilation.
 
-### v0.4 Removed possible side effect
+### v0.4 Last release that API compatible with old lib
 
 [Source](https://github.com/stokito/grails-cookie/releases/tag/v0.4)
+[JAR dependency](https://bintray.com/stokito/maven/liqpay-sdk/0.5/view)
 
+- This release is recommended if you used original old lib since it shouldn't break compilation.   
 - Params `version` and `public_key` are always set inside `cnb_form()` and `api()` methods.
 - Old version of `cnb_form()` accepted `public_key` parameter that can be differ from `publicKey`initialized in constructor. 
 - Methods `cnb_form()` and `api()` doesn't add `public_key` and `version` to instance of `params` method. I.e. now you can pass unmodifable map and reuse it without side effects. 
 - API wasn't changed and this release can't broke compilation.
 - Dependency was released in [http://dl.bintray.com/stokito/maven](https://bintray.com/stokito/maven/liqpay-sdk/0.4/view) repository and you can easily add it to your Maven project.
-- This release is recommended if you used original old lib since it shouldn't break compilation.   
 
 ### v0.5 Removed deprecated methods
 
 [Source](https://github.com/stokito/grails-cookie/releases/tag/v0.5)
+[JAR dependency](https://bintray.com/stokito/maven/liqpay-sdk/0.5/view)
 
 - Removed deprecated method `cnb_signature` because signature is already calculated inside `cnb_form(Map)`.
 - Method `api()` now returns general `Map` instead of concrete `HashMap`.
@@ -188,5 +190,11 @@ Changelog
 - Introduced two new properties `proxyLogin` and `proxyPassword` that should be used instead of deprecated method `setProxyUser(login, password)`.
 - Introduced method `setProxy(Proxy)` that should be used instead of shorthand and deprecated `setProxy(host, port, Proxy.Type)`. 
 - API **was changed** in this release and can broke compilation.
-- Dependency was released in [http://dl.bintray.com/stokito/maven](https://bintray.com/stokito/maven/liqpay-sdk/0.5/view) repository and you can easily add it to your Maven project.
 
+### v0.6 Enhanced usage
+
+[Source](https://github.com/stokito/grails-cookie/releases/tag/v0.6)
+[JAR dependency](https://bintray.com/stokito/maven/liqpay-sdk/0.6/view)
+
+- Created constructor `LiqPay(String publicKey, String privateKey, Proxy proxy, String proxyLogin, String proxyPassword)` that initialize API with proxy
+- Defined new property `isCnbSanbox()` that can globally set `sandbox` param in `cnb_form()` instead of specifying it always in `params`
