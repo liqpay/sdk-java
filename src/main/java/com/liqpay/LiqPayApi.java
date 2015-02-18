@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public interface LiqPayApi {
-    HashMap<String, Object> api(String path, Map<String, String> params) throws Exception;
+    Map<String, Object> api(String path, Map<String, String> params) throws Exception;
 
     /**
      * Liq and Buy
@@ -18,11 +18,4 @@ public interface LiqPayApi {
      * signature - function result base64_encode( sha1( $private_key . $data . $private_key ) )
      */
     String cnb_form(Map<String, String> params);
-
-    /**
-     * Signature for form
-     * @deprecated  You don't need it, because it already generated {@link #cnb_form(Map)}}
-     */
-    @Deprecated
-    String cnb_signature(Map<String, String> params);
 }

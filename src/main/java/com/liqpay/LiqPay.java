@@ -15,16 +15,6 @@ import static com.liqpay.LiqPayUtil.sha1;
 
 public class LiqPay implements LiqPayApi {
     public static final String API_VERSION = "3";
-    /**
-     * @deprecated Use a constant {@link #LIQPAY_API_URL}
-     */
-    @Deprecated
-    public String liqpayApiUrl = LIQPAY_API_URL;
-    /**
-     * @deprecated Use a constant {@link #LIQPAY_API_CHECKOUT_URL}
-     */
-    @Deprecated
-    public String host_checkout = LIQPAY_API_CHECKOUT_URL;
     private static final String LIQPAY_API_URL = "https://www.liqpay.com/api/";
     private static final String LIQPAY_API_CHECKOUT_URL = "https://www.liqpay.com/api/checkout";
     private static final String DEFAULT_LANG = "ru";
@@ -42,14 +32,6 @@ public class LiqPay implements LiqPayApi {
         checkRequired();
     }
 
-    @Deprecated
-    public LiqPay(String publicKey, String privateKey, String liqpayApiUrl) {
-        this.publicKey = publicKey;
-        this.privateKey = privateKey;
-        this.liqpayApiUrl = liqpayApiUrl;
-        checkRequired();
-    }
-
     private void checkRequired() {
         if (this.publicKey == null || this.publicKey.isEmpty()) {
             throw new IllegalArgumentException("publicKey is empty");
@@ -57,21 +39,17 @@ public class LiqPay implements LiqPayApi {
         if (this.privateKey == null || this.privateKey.isEmpty()) {
             throw new IllegalArgumentException("privateKey is empty");
         }
-        if (this.liqpayApiUrl == null || this.liqpayApiUrl.isEmpty()) {
-            throw new IllegalArgumentException("liqpayApiUrl is empty");
-        }
     }
 
     @Override
-    public HashMap<String, Object> api(String path, Map<String, String> params) throws Exception {
-        HashMap<String, String> data = generateData(params);
+    public Map<String, Object> api(String path, Map<String, String> params) throws Exception {
+        Map<String, String> data = generateData(params);
         String resp = LiqPayRequest.post(LIQPAY_API_URL + path, data, this);
         JSONObject jsonObj = (JSONObject) parser.parse(resp);
         return LiqPayUtil.parseJson(jsonObj);
     }
 
-    @SuppressWarnings("unchecked")
-    protected HashMap<String, String> generateData(Map<String, String> params) {
+    protected Map<String, String> generateData(Map<String, String> params) {
         HashMap<String, String> apiData = new HashMap<>();
         String data = base64_encode(JSONObject.toJSONString(withBasicApiParams(params)));
         apiData.put("data", data);
@@ -105,17 +83,6 @@ public class LiqPay implements LiqPayApi {
         return form;
     }
 
-    /**
-     * Signature for form
-     * @deprecated  You don't need it, because it already generated {@link #cnb_form(Map)}}
-     */
-    @Deprecated
-    @Override
-    public String cnb_signature(Map<String, String> params) {
-        checkCnbParams(params);
-        return createSignature(base64_encode(JSONObject.toJSONString(withBasicApiParams(params))));
-    }
-
     protected void checkCnbParams(Map<String, String> params) {
         if (params.get("amount") == null)
             throw new NullPointerException("amount can't be null");
@@ -123,14 +90,6 @@ public class LiqPay implements LiqPayApi {
             throw new NullPointerException("currency can't be null");
         if (params.get("description") == null)
             throw new NullPointerException("description can't be null");
-    }
-
-    /**
-     * @deprecated Just use a full version {@link #setProxy(String, Integer, Proxy.Type)}
-     */
-    @Deprecated
-    public void setProxy(String host, Integer port) {
-        proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
     }
 
     public void setProxy(String host, Integer port, Proxy.Type type) {
@@ -149,11 +108,7 @@ public class LiqPay implements LiqPayApi {
         return proxyUser;
     }
 
-    /**
-     * @deprecated It's low level method. Why you use it?
-     */
-    @Deprecated
-    public String str_to_sign(String str) {
+    protected String str_to_sign(String str) {
         return base64_encode(sha1(str));
     }
 

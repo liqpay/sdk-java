@@ -32,15 +32,8 @@ public class LiqPayTest {
         assertEquals(FORM, lp.cnb_form(params));
     }
 
-    @Test
-    public void testCnbSignature() throws Exception {
-        Map<String, String> params = defaultTestParams(null);
-        assertEquals("EgQW6JPjpAdM/He8UlhUfDwlvKI=", lp.cnb_signature(params));
-    }
-
     private Map<String, String> defaultTestParams(String removedKey) {
         Map<String, String> params = new TreeMap<>();
-        params.put("version", "3");
         params.put("language", "eo");
         params.put("amount", "1.5");
         params.put("currency", "USD");
@@ -56,7 +49,6 @@ public class LiqPayTest {
         Map<String, String> cnbParams = defaultTestParams(null);
         lp.checkCnbParams(cnbParams);
         assertEquals("eo", cnbParams.get("language"));
-        assertEquals("3", cnbParams.get("version"));
         assertEquals("USD", cnbParams.get("currency"));
         assertEquals("1.5", cnbParams.get("amount"));
         assertEquals("Description", cnbParams.get("description"));
@@ -102,14 +94,6 @@ public class LiqPayTest {
         assertEquals(9999, ((InetSocketAddress) p.address()).getPort());
         assertEquals(Proxy.Type.SOCKS, p.type());
     }
-    @Test
-    public void testSetProxyHttp() throws Exception {
-        lp.setProxy("192.168.0.1", 9999);
-        Proxy p = lp.getProxy();
-        assertEquals("192.168.0.1", ((InetSocketAddress)p.address()).getHostName());
-        assertEquals(9999, ((InetSocketAddress) p.address()).getPort());
-        assertEquals(Proxy.Type.HTTP, p.type());
-    }
 
     @Test
     public void testProxyUser() throws Exception {
@@ -128,7 +112,6 @@ public class LiqPayTest {
     @Test
     public void testGenerateData() throws Exception {
         Map<String, String> invoiceParams = new TreeMap<>();
-        invoiceParams.put("version", "3");
         invoiceParams.put("email", "client-email@gmail.com");
         invoiceParams.put("amount", "200");
         invoiceParams.put("currency", "USD");
