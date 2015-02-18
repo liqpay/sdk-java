@@ -4,7 +4,7 @@
     <artifactId>liqpay-sdk</artifactId>
     <packaging>jar</packaging>
     <name>LiqPay payments API</name>
-    <version>0.5-SNAPSHOT</version>
+    <version>0.4-SNAPSHOT</version>
     <url>https://www.liqpay.com/ru/doc</url>
     <licenses>
         <license>
