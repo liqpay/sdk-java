@@ -73,7 +73,6 @@ public class LiqPay implements LiqPayApi {
     @SuppressWarnings("unchecked")
     protected HashMap<String, String> generateData(Map<String, String> params) {
         HashMap<String, String> apiData = new HashMap<>();
-        System.out.println(JSONObject.toJSONString(withBasicApiParams(params)));
         String data = base64_encode(JSONObject.toJSONString(withBasicApiParams(params)));
         apiData.put("data", data);
         apiData.put("signature", createSignature(data));
