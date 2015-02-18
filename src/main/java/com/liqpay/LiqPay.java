@@ -18,7 +18,8 @@ public class LiqPay implements LiqPayApi {
     private final String publicKey;
     private final String privateKey;
     private Proxy proxy;
-    private String proxyUser;
+    private String proxyLogin;
+    private String proxyPassword;
 //    protected List<String> supportedCurrencies = Arrays.asList("EUR", "UAH", "USD", "RUB", "GEL");
 //    protected List<String> supportedParams = Arrays.asList("public_key", "amount", "currency", "description", "order_id", "result_url", "server_url", "type", "signature", "language", "sandbox");
 
@@ -88,20 +89,28 @@ public class LiqPay implements LiqPayApi {
             throw new NullPointerException("description can't be null");
     }
 
+    @Deprecated
     public void setProxy(String host, Integer port, Proxy.Type type) {
         proxy = new Proxy(type, new InetSocketAddress(host, port));
     }
 
+    public void setProxy(Proxy proxy) {
+        this.proxy = proxy;
+    }
+
+    @Deprecated
     public void setProxyUser(String login, String password) {
-        proxyUser = base64_encode(login + ":" + password);
+        this.proxyPassword = password;
+        this.proxyLogin = login;
     }
 
     public Proxy getProxy() {
         return proxy;
     }
 
+    @Deprecated
     public String getProxyUser() {
-        return proxyUser;
+        return base64_encode(proxyLogin + ":" + proxyPassword);
     }
 
     protected String str_to_sign(String str) {
@@ -110,5 +119,21 @@ public class LiqPay implements LiqPayApi {
 
     protected String createSignature(String base64EncodedData) {
         return str_to_sign(privateKey + base64EncodedData + privateKey);
+    }
+
+    public String getProxyLogin() {
+        return proxyLogin;
+    }
+
+    public String getProxyPassword() {
+        return proxyPassword;
+    }
+
+    public void setProxyLogin(String proxyLogin) {
+        this.proxyLogin = proxyLogin;
+    }
+
+    public void setProxyPassword(String proxyPassword) {
+        this.proxyPassword = proxyPassword;
     }
 }

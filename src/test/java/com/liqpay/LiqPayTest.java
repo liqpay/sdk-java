@@ -96,8 +96,15 @@ public class LiqPayTest {
     }
 
     @Test
-    public void testProxyUser() throws Exception {
+    public void testSetProxyUser() throws Exception {
         lp.setProxyUser("user", "pass");
+        assertEquals("dXNlcjpwYXNz", lp.getProxyUser());
+    }
+
+    @Test
+    public void testGetProxyUser() throws Exception {
+        lp.setProxyLogin("user");
+        lp.setProxyPassword("pass");
         assertEquals("dXNlcjpwYXNz", lp.getProxyUser());
     }
 
