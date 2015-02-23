@@ -4,11 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public interface LiqPayApi {
-    HashMap<String, Object> api(String path, Map<String, String> params) throws Exception;
+    String API_VERSION = "3";
+    String LIQPAY_API_URL = "https://www.liqpay.com/api/";
+    String LIQPAY_API_CHECKOUT_URL = "https://www.liqpay.com/api/checkout";
+    String DEFAULT_LANG = "ru";
+
+    Map<String, Object> api(String path, Map<String, String> params) throws Exception;
 
     /**
-     * Liq&Buy
-     * Payment acceptance on the site client->server
+     * Liq and Buy
+     * Payment acceptance on the site client to server
      * To accept payments on your site you will need:
      * Register on www.liqpay.com
      * Create a store in your account using install master
@@ -16,14 +21,6 @@ public interface LiqPayApi {
      * HTML form should be sent by POST to URL https://www.liqpay.com/api/checkout Two parameters data and signature, where:
      * data - function result base64_encode( $json_string )
      * signature - function result base64_encode( sha1( $private_key . $data . $private_key ) )
-     * @param params
-     * @return
      */
     String cnb_form(Map<String, String> params);
-    /**
-     * Signature for form
-     * @deprecated  You don't need it, because it already generated {@link #cnb_form(Map)}}
-     */
-    @Deprecated
-    String cnb_signature(Map<String, String> params);
 }
