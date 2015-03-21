@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import static com.liqpay.LiqPayUtil.base64_encode;
@@ -37,7 +38,7 @@ public class LiqPayRequest {
         wr.writeBytes(urlParameters);
         wr.flush();
         wr.close();
-        in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        in = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
 
         String inputLine;
         StringBuilder response = new StringBuilder();
