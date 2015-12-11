@@ -11,13 +11,13 @@ import static org.junit.Assert.*;
 
 public class LiqPayTest {
 
-    static final String CNB_FORM_WITHOUT_SANDBOX = "<form method=\"post\" action=\"https://www.liqpay.com/api/checkout\" accept-charset=\"utf-8\">\n" +
+    static final String CNB_FORM_WITHOUT_SANDBOX = "<form method=\"post\" action=\"https://www.liqpay.com/api/3/checkout\" accept-charset=\"utf-8\">\n" +
             "<input type=\"hidden\" name=\"data\" value=\"eyJhbW91bnQiOiIxLjUiLCJjdXJyZW5jeSI6IlVTRCIsImRlc2NyaXB0aW9uIjoiRGVzY3JpcHRpb24iLCJsYW5ndWFnZSI6ImVuIiwicHVibGljX2tleSI6InB1YmxpY0tleSIsInZlcnNpb24iOiIzIn0=\" />\n" +
             "<input type=\"hidden\" name=\"signature\" value=\"krCwuK4CBtNFAb6zqmJCeR/85VU=\" />\n" +
             "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1en.radius.png\" name=\"btn_text\" />\n" +
             "</form>\n";
 
-    static final String CNB_FORM_WITH_SANDBOX = "<form method=\"post\" action=\"https://www.liqpay.com/api/checkout\" accept-charset=\"utf-8\">\n" +
+    static final String CNB_FORM_WITH_SANDBOX = "<form method=\"post\" action=\"https://www.liqpay.com/api/3/checkout\" accept-charset=\"utf-8\">\n" +
             "<input type=\"hidden\" name=\"data\" value=\"eyJhbW91bnQiOiIxLjUiLCJjdXJyZW5jeSI6IlVTRCIsImRlc2NyaXB0aW9uIjoiRGVzY3JpcHRpb24iLCJsYW5ndWFnZSI6ImVuIiwicHVibGljX2tleSI6InB1YmxpY0tleSIsInNhbmRib3giOiIxIiwidmVyc2lvbiI6IjMifQ==\" />\n" +
             "<input type=\"hidden\" name=\"signature\" value=\"jDmdwKnagO2JhE1ONHdk3F7FG0c=\" />\n" +
             "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1en.radius.png\" name=\"btn_text\" />\n" +
