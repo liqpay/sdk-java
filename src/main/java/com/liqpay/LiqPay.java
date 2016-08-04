@@ -1,12 +1,12 @@
 package com.liqpay;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import static com.liqpay.LiqPayUtil.base64_encode;
 import static com.liqpay.LiqPayUtil.sha1;
@@ -19,6 +19,7 @@ public class LiqPay implements LiqPayApi {
     private String proxyLogin;
     private String proxyPassword;
     private boolean cnbSandbox;
+    private boolean renderPayButton = true;
 //    protected List<String> supportedCurrencies = Arrays.asList("EUR", "UAH", "USD", "RUB", "GEL");
 //    protected List<String> supportedParams = Arrays.asList("public_key", "amount", "currency", "description", "order_id", "result_url", "server_url", "type", "signature", "language", "sandbox");
 
@@ -78,6 +79,14 @@ public class LiqPay implements LiqPayApi {
         this.cnbSandbox = cnbSandbox;
     }
 
+    public boolean isRenderPayButton() {
+        return renderPayButton;
+    }
+
+    public void setRenderPayButton(boolean renderPayButton) {
+        this.renderPayButton = renderPayButton;
+    }
+
     @Override
     public Map<String, Object> api(String path, Map<String, String> params) throws Exception {
         Map<String, String> data = generateData(params);
@@ -124,7 +133,9 @@ public class LiqPay implements LiqPayApi {
         form += "<form method=\"post\" action=\"" + LIQPAY_API_CHECKOUT_URL + "\" accept-charset=\"utf-8\">\n";
         form += "<input type=\"hidden\" name=\"data\" value=\"" + data + "\" />\n";
         form += "<input type=\"hidden\" name=\"signature\" value=\"" + signature + "\" />\n";
-        form += "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1" + language + ".radius.png\" name=\"btn_text\" />\n";
+        if (this.renderPayButton) {
+            form += "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1" + language + ".radius.png\" name=\"btn_text\" />\n";
+        }
         form += "</form>\n";
         return form;
     }
