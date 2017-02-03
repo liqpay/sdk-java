@@ -23,7 +23,7 @@ Add to your `pom.xml` repository and dependency:
     <repository>
         <id>bintray-stokito-maven</id>
         <name>stokito-maven</name>
-        <url>https://api.bintray.com/maven/stokito/maven/liqpay-sdk</url>
+        <url>https://dl.bintray.com/stokito/maven</url>
     </repository>
 </repositories>
 
