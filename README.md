@@ -1,11 +1,11 @@
-LiqPay.com API SDK for Java
+liqpay.ua API SDK for Java
 ===========================
 
 [![Build Status](https://travis-ci.org/stokito/sdk-java.png?branch=master)](https://travis-ci.org/stokito/sdk-java)
 
-[LiqPay.com](https://LiqPay.com/) is payment system associated with [PrivatBank](https://privatbank.ua/). 
+[liqpay.ua](https://www.liqpay.ua/) is payment system associated with [PrivatBank](https://privatbank.ua/). 
 
-API Documentation [in Russian](https://www.liqpay.com/ru/doc) and [in English](https://www.liqpay.com/en/doc)
+API Documentation [in Russian](https://www.liqpay.ua/documentation/en) and [in English](https://www.liqpay.ua/documentation/en)
 
 **WARNING:** This SDK is not thread safe. We would be very appreciated for your contribution.
 
