@@ -5,7 +5,7 @@ liqpay.ua API SDK for Java
 
 [liqpay.ua](https://www.liqpay.ua/) is payment system associated with [PrivatBank](https://privatbank.ua/). 
 
-API Documentation [in Russian](https://www.liqpay.ua/documentation/en) and [in English](https://www.liqpay.ua/documentation/en)
+API Documentation [in Russian](https://www.liqpay.ua/documentation/ru) and [in English](https://www.liqpay.ua/documentation/en)
 
 **WARNING:** This SDK is not thread safe. We would be very appreciated for your contribution.
 
