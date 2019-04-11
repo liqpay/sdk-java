@@ -12,7 +12,7 @@ API Documentation [in Russian](https://www.liqpay.ua/documentation/ru) and [in E
 Installation and usage
 ----------------------
 
-This library is published at [BinTray](https://bintray.com/stokito/maven/liqpay-sdk/) and can be added as Maven dependency.
+This library is published at [GitHub](https://github.com/liqpay/sdk-java/tree/repository) and can be added as Maven dependency.
 
 ### Use as Maven dependency
 
@@ -20,18 +20,21 @@ Add to your `pom.xml` repository and dependency:
 
 ```xml
 <repositories>
-    <repository>
-        <id>bintray-stokito-maven</id>
-        <name>stokito-maven</name>
-        <url>https://dl.bintray.com/stokito/maven</url>
-    </repository>
-</repositories>
+        <repository>
+            <id>repository</id>
+            <url>https://github.com/liqpay/sdk-java/tree/repository</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 
 <dependency>
-    <groupId>com.liqpay</groupId>
-    <artifactId>liqpay-sdk</artifactId>
-    <version>0.6</version>
-</dependency>
+            <groupId>com.liqpay</groupId>
+            <artifactId>liqpay-sdk</artifactId>
+            <version>0.7-SNAPSHOT</version>
+  </dependency>
 ```
 
 Then you can use it as described in API documentation:
@@ -42,10 +45,10 @@ Map params = new HashMap();
 params.put("amount", "1.50");
 params.put("currency", "USD");
 params.put("description", "description text");
-params.put("order_id", "order_id_1");	
+params.put("order_id", "order_id_1");   
 params.put("sandbox", "1"); // enable the testing environment and card will NOT charged. If not set will be used property isCnbSandbox() 
 LiqPay liqpay = new LiqPay(PUBLIC_KEY, PRIVATE_KEY);
-String html = liqpay.cnb_form(params);		
+String html = liqpay.cnb_form(params);      
 System.out.println(html);
 ```
 
@@ -76,11 +79,11 @@ grails.project.dependency.resolution = {
     repositories {
         grailsPlugins()
         ...
-        mavenRepo 'http://dl.bintray.com/stokito/maven'
+        mavenRepo 'https://github.com/liqpay/sdk-java/tree/repository'
     }
     dependencies {
         ...
-        compile 'com.liqpay:liqpay-sdk:0.6'
+        compile 'com.liqpay:liqpay-sdk:0.7-SNAPSHOT'
     }
 ...
 }
@@ -170,19 +173,17 @@ Changelog
 ### v0.4 Last release that API compatible with old lib
 
 [Source](https://github.com/stokito/grails-cookie/releases/tag/v0.4)
-[JAR dependency](https://bintray.com/stokito/maven/liqpay-sdk/0.5/view)
 
 - This release is recommended if you used original old lib since it shouldn't break compilation.   
 - Params `version` and `public_key` are always set inside `cnb_form()` and `api()` methods.
 - Old version of `cnb_form()` accepted `public_key` parameter that can be differ from `publicKey`initialized in constructor. 
 - Methods `cnb_form()` and `api()` doesn't add `public_key` and `version` to instance of `params` method. I.e. now you can pass unmodifable map and reuse it without side effects. 
 - API wasn't changed and this release can't broke compilation.
-- Dependency was released in [http://dl.bintray.com/stokito/maven](https://bintray.com/stokito/maven/liqpay-sdk/0.4/view) repository and you can easily add it to your Maven project.
+
 
 ### v0.5 Removed deprecated methods
 
 [Source](https://github.com/stokito/grails-cookie/releases/tag/v0.5)
-[JAR dependency](https://bintray.com/stokito/maven/liqpay-sdk/0.5/view)
 
 - Removed deprecated method `cnb_signature` because signature is already calculated inside `cnb_form(Map)`.
 - Method `api()` now returns general `Map` instead of concrete `HashMap`.
@@ -194,7 +195,10 @@ Changelog
 ### v0.6 Enhanced usage
 
 [Source](https://github.com/stokito/grails-cookie/releases/tag/v0.6)
-[JAR dependency](https://bintray.com/stokito/maven/liqpay-sdk/0.6/view)
 
 - Created constructor `LiqPay(String publicKey, String privateKey, Proxy proxy, String proxyLogin, String proxyPassword)` that initialize API with proxy
 - Defined new property `isCnbSanbox()` that can globally set `sandbox` param in `cnb_form()` instead of specifying it always in `params`
+
+
+### v0.7-SNAPSHOT
+- Changed url form liqpay.com to liqpay.ua
