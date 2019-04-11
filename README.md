@@ -20,18 +20,21 @@ Add to your `pom.xml` repository and dependency:
 
 ```xml
 <repositories>
-    <repository>
-        <id>bintray-stokito-maven</id>
-        <name>stokito-maven</name>
-        <url>https://dl.bintray.com/stokito/maven</url>
-    </repository>
-</repositories>
+        <repository>
+            <id>repository</id>
+            <url>https://github.com/liqpay/sdk-java/tree/repository</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
 
 <dependency>
-    <groupId>com.liqpay</groupId>
-    <artifactId>liqpay-sdk</artifactId>
-    <version>0.6</version>
-</dependency>
+            <groupId>com.liqpay</groupId>
+            <artifactId>liqpay-sdk</artifactId>
+            <version>0.7-SNAPSHOT</version>
+  </dependency>
 ```
 
 Then you can use it as described in API documentation:
@@ -76,11 +79,11 @@ grails.project.dependency.resolution = {
     repositories {
         grailsPlugins()
         ...
-        mavenRepo 'http://dl.bintray.com/stokito/maven'
+        mavenRepo 'https://github.com/liqpay/sdk-java/tree/repository'
     }
     dependencies {
         ...
-        compile 'com.liqpay:liqpay-sdk:0.6'
+        compile 'com.liqpay:liqpay-sdk:0.7-SNAPSHOT'
     }
 ...
 }
@@ -198,3 +201,7 @@ Changelog
 
 - Created constructor `LiqPay(String publicKey, String privateKey, Proxy proxy, String proxyLogin, String proxyPassword)` that initialize API with proxy
 - Defined new property `isCnbSanbox()` that can globally set `sandbox` param in `cnb_form()` instead of specifying it always in `params`
+
+
+### v0.7-SNAPSHOT
+- Changed url form liqpay.com to liqpay.ua
