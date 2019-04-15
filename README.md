@@ -12,7 +12,7 @@ API Documentation [in Russian](https://www.liqpay.ua/documentation/ru) and [in E
 Installation and usage
 ----------------------
 
-This library is published at [GitHub](https://github.com/liqpay/sdk-java/tree/repository) and can be added as Maven dependency.
+This library is published at [GitHub](https://github.com/liqpay/sdk-java/raw/repository) and can be added as Maven dependency.
 
 ### Use as Maven dependency
 
@@ -22,7 +22,7 @@ Add to your `pom.xml` repository and dependency:
 <repositories>
         <repository>
             <id>repository</id>
-            <url>https://github.com/liqpay/sdk-java/tree/repository</url>
+            <url>https://github.com/liqpay/sdk-java/raw/repository</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
