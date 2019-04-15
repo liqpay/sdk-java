@@ -79,7 +79,7 @@ grails.project.dependency.resolution = {
     repositories {
         grailsPlugins()
         ...
-        mavenRepo 'https://github.com/liqpay/sdk-java/tree/repository'
+        mavenRepo 'https://github.com/liqpay/sdk-java/raw/repository'
     }
     dependencies {
         ...
