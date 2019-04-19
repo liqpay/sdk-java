@@ -23,8 +23,8 @@ public class LiqPay implements LiqPayApi {
      */
     @Deprecated
     public String host_checkout = LIQPAY_API_CHECKOUT_URL;
-    private static final String LIQPAY_API_URL = "https://www.liqpay.com/api/";
-    private static final String LIQPAY_API_CHECKOUT_URL = "https://www.liqpay.com/api/checkout";
+    private static final String LIQPAY_API_URL = "https://www.liqpay.ua/api/";
+    private static final String LIQPAY_API_CHECKOUT_URL = "https://www.liqpay.ua/api/checkout";
     private static final String DEFAULT_LANG = "ru";
     private final JSONParser parser = new JSONParser();
     private final String publicKey;
@@ -103,7 +103,7 @@ public class LiqPay implements LiqPayApi {
         form += "<form method=\"post\" action=\"" + LIQPAY_API_CHECKOUT_URL + "\" accept-charset=\"utf-8\">\n";
         form += "<input type=\"hidden\" name=\"data\" value=\"" + data + "\" />\n";
         form += "<input type=\"hidden\" name=\"signature\" value=\"" + signature + "\" />\n";
-        form += "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1" + language + ".radius.png\" name=\"btn_text\" />\n";
+        form += "<input type=\"image\" src=\"//static.liqpay.ua/buttons/p1" + language + ".radius.png\" name=\"btn_text\" />\n";
         form += "</form>\n";
         return form;
     }

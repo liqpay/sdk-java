@@ -13,10 +13,10 @@ import static org.junit.Assert.*;
 
 public class LiqPayTest {
 
-    static final String FORM = "<form method=\"post\" action=\"https://www.liqpay.com/api/checkout\" accept-charset=\"utf-8\">\n" +
+    static final String FORM = "<form method=\"post\" action=\"https://www.liqpay.ua/api/checkout\" accept-charset=\"utf-8\">\n" +
             "<input type=\"hidden\" name=\"data\" value=\"eyJhbW91bnQiOiIxLjUiLCJkZXNjcmlwdGlvbiI6IkRlc2NyaXB0aW9uIiwibGFuZ3VhZ2UiOiJlbyIsInB1YmxpY19rZXkiOiJwdWJsaWNLZXkiLCJ2ZXJzaW9uIjoiMyIsImN1cnJlbmN5IjoiVVNEIn0=\" />\n" +
             "<input type=\"hidden\" name=\"signature\" value=\"DEggXkxcCsuZFwt/R4+zDekMPZ4=\" />\n" +
-            "<input type=\"image\" src=\"//static.liqpay.com/buttons/p1eo.radius.png\" name=\"btn_text\" />\n" +
+            "<input type=\"image\" src=\"//static.liqpay.ua/buttons/p1eo.radius.png\" name=\"btn_text\" />\n" +
             "</form>\n";
 
     @Test
