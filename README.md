@@ -202,3 +202,6 @@ Changelog
 
 ### v0.7-SNAPSHOT
 - Changed url form liqpay.com to liqpay.ua
+
+### v0.8-SNAPSHOT
+- Fixed a checkout url from `/api/3/checkout` to `/api/checkout`.
