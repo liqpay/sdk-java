@@ -4,7 +4,7 @@
     <artifactId>liqpay-sdk</artifactId>
     <packaging>jar</packaging>
     <name>LiqPay payments API</name>
-    <version>0.7-SNAPSHOT</version>
+    <version>0.8-SNAPSHOT</version>
     <url>https://www.liqpay.ua/documentation/en</url>
     <licenses>
         <license>
@@ -38,7 +38,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
+            <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -51,8 +51,8 @@
                 <version>3.2</version>
                 <configuration>
                     <fork>true</fork>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>

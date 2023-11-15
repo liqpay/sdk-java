@@ -119,6 +119,19 @@ public class LiqPay implements LiqPayApi {
         return params;
     }
 
+    protected String getBtnTxt(String lang) {
+        switch (lang){
+            case "ru":
+                return "Оплатить";
+            case "uk":
+                return "Сплатити";
+            case "en":
+                return "Pay";
+            default:
+                return "Сплатити";
+        }
+    }
+
     @Override
     public String cnb_form(Map<String, String> params) {
         checkCnbParams(params);
@@ -134,7 +147,8 @@ public class LiqPay implements LiqPayApi {
         form += "<input type=\"hidden\" name=\"data\" value=\"" + data + "\" />\n";
         form += "<input type=\"hidden\" name=\"signature\" value=\"" + signature + "\" />\n";
         if (this.renderPayButton) {
-            form += "<input type=\"image\" src=\"//static.liqpay.ua/buttons/p1" + language + ".radius.png\" name=\"btn_text\" />\n";
+            form += "<script type=\"text/javascript\" src=\"https://static.liqpay.ua/libjs/sdk_button.js\"></script>\n" +
+                    "<sdk-button label=\"" + getBtnTxt(language) + "\" background=\"#77CC5D\" onClick=\"submit()\"></sdk-button>";
         }
         form += "</form>\n";
         return form;
