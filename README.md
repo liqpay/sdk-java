@@ -5,14 +5,14 @@ liqpay.ua API SDK for Java
 
 [liqpay.ua](https://www.liqpay.ua/) is payment system associated with [PrivatBank](https://privatbank.ua/). 
 
-API Documentation [in Russian](https://www.liqpay.ua/documentation/ru) and [in English](https://www.liqpay.ua/documentation/en)
+API Documentation [in Ukrainian](https://www.liqpay.ua/documentation) and [in English](https://www.liqpay.ua/en/documentation)
 
 **WARNING:** This SDK is not thread safe. We would be very appreciated for your contribution.
 
 Installation and usage
 ----------------------
 
-This library is published at [GitHub](https://github.com/liqpay/sdk-java/raw/repository) and can be added as Maven dependency.
+This library is published at [GitHub](https://github.com/liqpay/sdk-java/) and can be added as Maven dependency.
 
 ### Use as Maven dependency
 
@@ -22,7 +22,7 @@ Add to your `pom.xml` repository and dependency:
 <repositories>
         <repository>
             <id>repository</id>
-            <url>https://github.com/liqpay/sdk-java/raw/repository</url>
+            <url>https://github.com/liqpay/sdk-java/tree/master</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
@@ -33,7 +33,7 @@ Add to your `pom.xml` repository and dependency:
 <dependency>
             <groupId>com.liqpay</groupId>
             <artifactId>liqpay-sdk</artifactId>
-            <version>0.7-SNAPSHOT</version>
+            <version>0.8-SNAPSHOT</version>
   </dependency>
 ```
 
@@ -79,11 +79,11 @@ grails.project.dependency.resolution = {
     repositories {
         grailsPlugins()
         ...
-        mavenRepo 'https://github.com/liqpay/sdk-java/raw/repository'
+        mavenRepo 'https://github.com/liqpay/sdk-java/tree/master'
     }
     dependencies {
         ...
-        compile 'com.liqpay:liqpay-sdk:0.7-SNAPSHOT'
+        compile 'com.liqpay:liqpay-sdk:0.8-SNAPSHOT'
     }
 ...
 }
@@ -202,3 +202,7 @@ Changelog
 
 ### v0.7-SNAPSHOT
 - Changed url form liqpay.com to liqpay.ua
+
+### v0.8-SNAPSHOT
+[Source]()
+- Changed cnb_form method. New form.
