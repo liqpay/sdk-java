@@ -22,7 +22,7 @@ Add to your `pom.xml` repository and dependency:
 <repositories>
         <repository>
             <id>repository</id>
-            <url>https://github.com/liqpay/sdk-java/tree/repository</url>
+            <url>https://github.com/liqpay/sdk-java/raw/repository</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
@@ -79,7 +79,7 @@ grails.project.dependency.resolution = {
     repositories {
         grailsPlugins()
         ...
-        mavenRepo 'https://github.com/liqpay/sdk-java/tree/repository'
+        mavenRepo 'https://github.com/liqpay/sdk-java/raw/repository'
     }
     dependencies {
         ...
