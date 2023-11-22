@@ -4,8 +4,8 @@
   <artifactId>liqpay-sdk</artifactId>
   <versioning>
     <versions>
-      <version>0.7-SNAPSHOT</version>
+      <version>0.8-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20190412135908</lastUpdated>
+    <lastUpdated>20231122135755</lastUpdated>
   </versioning>
 </metadata>
